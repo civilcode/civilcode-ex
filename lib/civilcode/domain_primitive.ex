@@ -1,24 +1,25 @@
 defmodule CivilCode.DomainPrimitive do
   @moduledoc false
 
+  alias CivilCode.Result
+
   defmacro __using__(_) do
     quote do
-      @type t :: %__MODULE__{}
+      use TypedStruct
 
-      @behaviour Elixir.Ecto.Type
-
-      alias CivilCode.Result
-
-      def cast(value) do
-        case new(value) do
-          {:ok, _} = result -> result
-          {:error, _} -> :error
-        end
+      def new(value) do
+        __MODULE__
+        |> struct(value: value)
+        |> Result.ok()
       end
 
-      def type, do: :error
-      def load(_), do: :error
-      def dump(_), do: :error
+      defoverridable new: 1
+
+      def new!(value) do
+        {:ok, primitive} = new(value)
+
+        primitive
+      end
     end
   end
 end
