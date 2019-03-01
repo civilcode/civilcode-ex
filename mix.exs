@@ -5,10 +5,10 @@ defmodule CivilCode.MixProject do
     [
       app: :civilcode,
       version: "0.0.0",
-      build_path: "../../_build",
-      config_path: "../../config/config.exs",
-      deps_path: "../../deps",
-      lockfile: "../../mix.lock",
+      build_path: "_build",
+      config_path: "config/config.exs",
+      deps_path: "deps",
+      lockfile: "mix.lock",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -23,10 +23,15 @@ defmodule CivilCode.MixProject do
 
   defp deps do
     [
+      # Development
+      {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
+
+      # Runtime
       {:currying, "~> 1.0.3"},
       {:ecto, "~> 2.1"},
       {:typed_struct, "~> 0.1.1", runtime: false},
-      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false}
+      {:uuid, "~> 1.1.8"}
     ]
   end
 end
