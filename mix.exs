@@ -29,7 +29,7 @@ defmodule CivilCode.MixProject do
 
       # Runtime
       {:currying, "~> 1.0.3"},
-      {:ecto, "~> 2.1"},
+      {:ecto, "~> 3.0.8"},
       {:typed_struct, "~> 0.1.1", runtime: false},
       {:uuid, "~> 1.1.8"}
     ]
