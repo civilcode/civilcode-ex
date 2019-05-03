@@ -13,6 +13,10 @@ defmodule CivilCode.Maybe do
   @spec none() :: :none
   def none, do: :none
 
+  @spec some(nil | a) :: no_return | t(a)
+  def some(nil), do: raise "Maybe.some/1 expects a non-nil value"
+  def some(value), do: new(value)
+
   @spec new(nil | any) :: t(any)
   def new(nil), do: :none
   def new(value), do: {:some, value}
