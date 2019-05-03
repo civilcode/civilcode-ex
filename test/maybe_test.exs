@@ -3,6 +3,18 @@ defmodule CivilCode.MaybeTest do
 
   alias CivilCode.Maybe
 
+  describe "wrapping a non-nil value" do
+    test "non-nil value is wrapped in a Maybe" do
+      assert Maybe.some(1) == {:some, 1}
+    end
+
+    test "nil value crashes" do
+      assert_raise RuntimeError, "Maybe.some/1 expects a non-nil value", fn ->
+        Maybe.some(nil)
+      end
+    end
+  end
+
   describe "new maybe" do
     test "nil value returns a none type" do
       assert :none == Maybe.new(nil)
