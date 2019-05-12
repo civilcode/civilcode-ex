@@ -34,6 +34,8 @@ defmodule CivilCode.Entity do
     struct!(module, attrs ++ [__entity__: struct!(Metadata)])
   end
 
+  def build(module, {:ok, state}), do: build(module, state)
+
   def build(module, state) do
     fields = state |> Map.from_struct() |> Enum.into([])
     struct(module, fields ++ [__entity__: struct!(Metadata)])

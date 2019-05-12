@@ -14,7 +14,7 @@ defmodule CivilCode.Maybe do
   def none, do: :none
 
   @spec some(nil | a) :: no_return | t(a)
-  def some(nil), do: raise "Maybe.some/1 expects a non-nil value"
+  def some(nil), do: raise("Maybe.some/1 expects a non-nil value")
   def some(value), do: new(value)
 
   @spec new(nil | any) :: t(any)
