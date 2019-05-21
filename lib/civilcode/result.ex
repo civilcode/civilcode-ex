@@ -5,13 +5,6 @@ defmodule CivilCode.Result do
   @type error(any) :: {:error, any}
   @type t(any) :: ok(any) | error(any)
 
-  @spec unwrap(t(any) | [t(any)]) :: any
-  def unwrap({_, payload}), do: payload
-
-  def unwrap(results) when is_list(results) do
-    Enum.map(results, &unwrap/1)
-  end
-
   @spec unwrap!({:ok, any}) :: any
   def unwrap!({:ok, payload}), do: payload
 
