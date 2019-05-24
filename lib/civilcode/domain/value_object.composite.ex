@@ -6,6 +6,7 @@ defmodule CivilCode.ValueObject.Composite do
   defmacro __using__(_) do
     quote do
       alias CivilCode.ValueObject.Composite
+
       @type t :: %__MODULE__{}
 
       use Ecto.Schema
@@ -32,8 +33,9 @@ defmodule CivilCode.ValueObject.Composite do
   end
 
   def new!(module, params) do
-    {:ok, struct} = new(module, params)
-    struct
+    module
+    |> new(params)
+    |> Result.unwrap!()
   end
 
   def changeset(struct, params) do

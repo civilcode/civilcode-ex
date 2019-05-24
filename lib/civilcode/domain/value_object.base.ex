@@ -1,11 +1,11 @@
 defmodule CivilCode.ValueObject.Base do
   @moduledoc false
 
-  alias CivilCode.Result
-
   defmacro __using__(_) do
     quote do
       use TypedStruct
+
+      alias CivilCode.Result
 
       def new(value) do
         __MODULE__
