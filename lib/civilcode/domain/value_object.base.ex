@@ -1,4 +1,4 @@
-defmodule CivilCode.DomainPrimitive do
+defmodule CivilCode.ValueObject.Base do
   @moduledoc false
 
   alias CivilCode.Result

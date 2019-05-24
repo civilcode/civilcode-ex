@@ -1,11 +1,37 @@
 defmodule CivilCode.RepositoryError do
-  @moduledoc false
-  @type t :: %__MODULE__{}
+  @moduledoc """
+  A type for errors that occur when persisting an aggregate.
 
-  defstruct [:field_name, :message]
+  ## Usage
+
+  The error is returned from a Repository and generally triggered by unique constraint violations.
+
+  ## Example
+
+      def save(changeset) do
+        result =
+          changeset
+          |> Ecto.Changeset.unique_constraint(:id, name: :magasin_sale_orders_pkey)
+          |> Repo.insert_or_update()
+
+        case result do
+          {:ok, order} -> Result.ok(order.id)
+          {:error, invalid_changeset} -> RepositoryError.validate(invalid_changeset)
+        end
+      end
+
+      # => {:error, %CivilCode.RepositoryError{field_name: :id, message: "has already been taken"}}
+  """
+  use TypedStruct
 
   import Ecto.Changeset
+
   alias CivilCode.Result
+
+  typedstruct enforce: true do
+    field(:field_name, atom)
+    field(:message, String.t())
+  end
 
   @spec validate(Ecto.Changeset.t()) :: {:error, t}
   def validate(changeset) do

@@ -1,6 +1,7 @@
 defmodule CivilCode.QueryResult do
   @moduledoc """
   The result type for an executed query.
+
   Example:
       Landing
       |> Repo.get(landing_id)

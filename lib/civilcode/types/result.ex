@@ -8,8 +8,8 @@ defmodule CivilCode.Result do
   @spec unwrap!({:ok, any}) :: any
   def unwrap!({:ok, payload}), do: payload
 
-  def unwrap!({:error, _}) do
-    raise "Unexpected error tuple"
+  def unwrap!({:error, value}) do
+    raise "Unexpected error tuple: #{inspect(value)}"
   end
 
   @spec ok(any) :: ok(any)

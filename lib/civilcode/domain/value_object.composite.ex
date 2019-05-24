@@ -1,18 +1,21 @@
-defmodule CivilCode.DomainPrimitive.Composite do
+defmodule CivilCode.ValueObject.Composite do
   @moduledoc false
 
-  alias CivilCode.Validation
+  alias CivilCode.Result
 
   defmacro __using__(_) do
     quote do
-      alias CivilCode.DomainPrimitive.Composite
+      alias CivilCode.ValueObject.Composite
       @type t :: %__MODULE__{}
 
       use Ecto.Schema
 
       import Ecto.Changeset
 
-      def new(params), do: Composite.new(__struct__(), params)
+      def new(params) do
+        Composite.new(__struct__(), params)
+      end
+
       def new!(params), do: Composite.new!(__struct__(), params)
       def changeset(struct, params), do: Composite.changeset(struct, params)
     end
@@ -20,11 +23,11 @@ defmodule CivilCode.DomainPrimitive.Composite do
 
   def new(domain_primitive, params) do
     domain_primitive
-    |> domain_primitive.__struct__.changeset(params)
-    |> Validation.validate()
+    |> changeset(params)
+    |> Ecto.Changeset.apply_action(:update)
     |> case do
-      {:error, validation} -> {:error, validation.errors}
-      result -> result
+      {:error, invalid_changeset} -> Result.error(invalid_changeset)
+      {:ok, struct} -> Result.ok(struct)
     end
   end
 

@@ -1,11 +1,12 @@
 defmodule CivilCode.Repository do
   @moduledoc """
+  A Repository hydrates and persists an Aggregate.
 
   > This basic set of principles applies to a DDD Repository. Placing an Aggregate (10) instance in
   > its corresponding Repository, and later using that Repository to retrieve the same instance,
   > yields the expected whole object. If you alter a preexisting Aggregate instance that you
   > retrieve from the Repository, its changes will be persisted. If you remove the instance from
-  > the Repository, you will be unable to retrieve it from that point forward. [Vernon, p. 401]
+  > the Repository, you will be unable to retrieve it from that point forward. [IDDD, p. 401]
 
   CivilCode implements persistence-oriented, save-based Repository (12). This is because Ecto
   doesn’t implicitly or explicitly detect and track data changes, which is not unexpected in a
@@ -19,10 +20,26 @@ defmodule CivilCode.Repository do
   to collections and persistence.
 
   Repositories can be adapters for other stores beyond a traditional RDBMS. These may be a key-value
-  store or event the file system.
+  store or even the file system.
+
+  For more complex queries required for a user case:
+
+  > You might instead use what is called a use case optimal query. This is where you specify a
+    complex query against the persistence mechanism, dynamically placing the results into a
+    Value Object (6) specifically designed to address the needs of the use case. [IDDD, p. 517]
+
+  ## Usage
+
+  Repositories MUST BE used for Rich-Domain and Event-Driven Architectures.
+
+  Both of these architectures require Commands which cast Params to Value Objects, it is the
+  invalid Command in the form of a Ecto.Changeset.t() that is returned to the client. Although,
+  Entity domain actions return Ecto.Changeset in a Rich-Domain Architecture they are not returned
+  to the client as the data is already validated, therefore an explicit RepositoryError must
+  be returned.
   """
 
-  alias CivilCode.{Entity, EntityId, Result}
+  alias CivilCode.{Aggregate, Entity, EntityId, Result}
 
   defmodule Behaviour do
     @moduledoc false
@@ -37,7 +54,7 @@ defmodule CivilCode.Repository do
     @doc """
     Retrieves an aggregate from the Repository.
     """
-    @callback get(id) :: Entity.t()
+    @callback get(id) :: Aggregate.t()
 
     @doc """
     Persists the aggregate in the Repository.
@@ -47,10 +64,19 @@ defmodule CivilCode.Repository do
 
   defmacro __using__(_) do
     quote do
-      alias CivilCode.{Entity, Result}
+      alias CivilCode.{Entity, RepositoryError, Result}
 
       @behaviour Behaviour
 
+      @doc """
+      Builds an Entity from a database record.
+
+      Example:
+
+          build(Order, fn ->
+            Repo.get!(Record, order_id)
+          end)
+      """
       def build(module, func) do
         record = func.()
 

@@ -11,7 +11,11 @@ defmodule CivilCode.MixProject do
       lockfile: "mix.lock",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -25,6 +29,7 @@ defmodule CivilCode.MixProject do
     [
       # Development
       {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.20.2", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
 
       # Runtime
