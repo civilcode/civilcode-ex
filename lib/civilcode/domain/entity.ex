@@ -56,15 +56,15 @@ defmodule CivilCode.Entity do
 
   defmacro __using__(_) do
     quote do
-      import CivilCode.Entity, only: [entity_schema: 1]
+      import CivilCode.Entity
     end
   end
 
-  defmacro entity_schema(do: block) do
+  defmacro typedstruct(do: block) do
     quote do
       use TypedStruct
 
-      typedstruct do
+      TypedStruct.typedstruct do
         unquote(block)
         field(:__entity__, Metadata.t())
       end

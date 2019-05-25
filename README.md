@@ -281,7 +281,7 @@ Alternatively, if a custom schema is required:
 defmodule MagasinCore.Sales.Order do
   use CivilCode.Entity
 
-  entity_schema do
+  embedded_schema do
     field product_id, CivilCode.EntityId
   end
 

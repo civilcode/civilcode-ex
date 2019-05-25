@@ -63,10 +63,10 @@ defmodule CivilCode.Aggregate do
 
     defmacro __using__(_) do
       quote do
-        import Kernel, except: [apply: 2]
+        use CivilCode.Entity
 
+        import Kernel, except: [apply: 2]
         import CivilCode.Aggregate.Root
-        import CivilCode.Entity
 
         def new(attrs) do
           CivilCode.Entity.new(__MODULE__, attrs)

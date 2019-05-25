@@ -35,7 +35,7 @@ defmodule CivilCode.Command do
       alias MagasinData.{Address, Catalog, Email, Quantity}
       alias MagasinData.Sales.OrderId
 
-      command_schema do
+      embedded_schema do
         field :order_id, OrderId
         field :email, Email
         field :product_id, Catalog.ProductId
@@ -58,24 +58,16 @@ defmodule CivilCode.Command do
 
   defmacro __using__(_args) do
     quote do
+      use Ecto.Schema
+
       @type t :: %__MODULE__{}
 
       import Ecto.Changeset
       import CivilCode.Command
 
       alias CivilCode.{Params, Result}
-    end
-  end
-
-  defmacro command_schema(do: block) do
-    quote do
-      use Ecto.Schema
 
       @primary_key false
-
-      embedded_schema do
-        unquote(block)
-      end
     end
   end
 end
