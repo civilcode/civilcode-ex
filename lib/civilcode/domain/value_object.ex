@@ -1,6 +1,8 @@
 defmodule CivilCode.ValueObject do
   @moduledoc """
-  Value objects measures, quantifies, or describes an Entity.
+  Value objects measures, quantifies, or describes an `CivilCode.Entity`.
+
+  ## From the Experts
 
   > When you have a true Value Object in your model, whether you realize it or not, it is not a
   > thing in your domain. Instead, it is actually a concept that measures, quantifies, or otherwise
@@ -23,7 +25,7 @@ defmodule CivilCode.ValueObject do
 
   ValueObject's MUST BE used in all architecture styles. This ValueObject implementation
   implements the `Ecto.Type` so they can easily be used with building blocks implemented with
-  Ecto.Schemas such as data records and Commands.
+  `Ecto.Schema` such as data records and Commands.
 
   A number of convience modules have been provide to generate ValueObject easily, for example:
 
@@ -36,17 +38,17 @@ defmodule CivilCode.ValueObject do
 
   Composite ValueObjects can be created using an Ecto.Schema:
 
-    defmodule MagasinData.Address do
-      use CivilCode.ValueObject, type: :composite, required: [:street_address, :city, :postal_code]
+      defmodule MagasinData.Address do
+        use CivilCode.ValueObject, type: :composite, required: [:street_address, :city, :postal_code]
 
-      alias MagasinData.PostalCode
+        alias MagasinData.PostalCode
 
-      embedded_schema do
-        field :street_address, :string
-        field :city, :string
-        field :postal_code, PostalCode
+        embedded_schema do
+          field :street_address, :string
+          field :city, :string
+          field :postal_code, PostalCode
+        end
       end
-    end
   """
 
   def string(_) do

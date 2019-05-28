@@ -1,5 +1,7 @@
 defmodule CivilCode.ResultList do
-  @moduledoc false
+  @moduledoc """
+  A list of `CivilCode.Result`.
+  """
 
   alias CivilCode.Result
 

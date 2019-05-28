@@ -2,6 +2,8 @@ defmodule CivilCode.Entity do
   @moduledoc """
   A concept in the domain that performs actions on a uniquely identified object.
 
+  ## From the Experts
+
   > We design a domain concept as an Entity when we care about its individuality, when
   > distinguishing it from all other objects in a system is a mandatory constraint. An Entity is
   > a unique thing and is capable of being changed continuously over a long period of time.
@@ -11,6 +13,8 @@ defmodule CivilCode.Entity do
   > These redesigned methods have a CQS query contract and act as Factories (11); that is, each
     creates a new Aggregate instance and returns a reference to it." - [IDDD]
 
+  ## Usage
+
   Entities form Aggregates, one Entity in the Aggregate will act as the Aggregate Root
   (`CivilCode.Aggregate.Root`), all function calls are made through the Aggregate, creating a
   public API.
@@ -18,10 +22,65 @@ defmodule CivilCode.Entity do
   Entities have domain actions that operate on the Entity, or return new Aggregates of a different
   type. The domain actions have no side effects, i.e. no indirect inputs, e.g. env, time.
 
-  ## Life cycle or operational states
+  Entities are used in all architectures. In __Simple-Domain__ Architecture style they will have basic
+  CRUD functions, i.e. `create` and `update` while __Rich-Domain__ and __Event-Driven__ Architectures will
+  have domain actions.
 
-  Determining the current state is done via a predicate:
+  Entities can working on state from the Data application, or can create their own struct which
+  is hydrated from the Aggregate Repository.
 
+  Domain Actions will always return a valid `Ecto.Changeset.t()` unless a business rule has been violated
+  then a `CivilCode.BusinessException.t()` result will be returned.
+
+  The three examples below demonstrate a domain action in the different architecture styles:
+
+      # Simple-Domain
+
+      @spec deplenish(t, Params.t) :: Ecto.Changeset.t(t)
+      def deplenish(stock_item, params) do
+        cast(stock_item, params, [:count_on_hand]
+      end
+
+      # Rich-Domain
+
+      @spec deplenish(t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)}, {:error, OutOfStock.t}
+      def deplenish(stock_item, quantity) do
+        case Quantity.subtract(stock_item.count_on_hand, quantity) do
+          {:ok, new_count_on_hand} ->
+             changeset = change(stock_item, count_on_hand: new_cound_on_hand)
+             {:ok, changeset}
+
+          {:error, _} ->
+            {:error, OutOfStock.new(entity: stock_item)}
+        end
+      end
+
+      # Event-Based
+
+      @spec deplenish(t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)}, {:error, OutOfStock.t}
+      def deplenish(stock_item, quantity) do
+        case Quantity.subtract(stock_item.count_on_hand, quantity) do
+          {:ok, new_count_on_hand} ->
+             # NOTE: The event will be published by the Repository when the Changeset is persisted
+             StockItemAdjusted.new(stock_item_id: stock_item.id, new_count_on_hand: new_count_on_hand)}
+             changeset = change(stock_item, event, count_on_hand: new_cound_on_hand)
+             {:ok, changeset}
+
+          {:error, _} ->
+            {:error, OutOfStock.new(entity: stock_item)}
+        end
+      end
+
+  ## Design Constraints
+
+   * TypedStruct is used to implement Entity schemas when needed. Simple structs (vs Ecto-based structs)
+     allow for parameterised types, e.g. Maybe.t.
+  * `Ecto.Changeset.validate_required/2` is the only validation function allowed in Entities, other
+    funtions such as `Ecto.Changeset.validate_format/3` are not allowed as ValueObjects handle
+    the validation of values.
+  * For Life cycle or operational states the current state is determined via a predicate:
+
+  ```
       # good
 
       Order.completed?(order)
@@ -29,19 +88,8 @@ defmodule CivilCode.Entity do
       # bad
 
       order.state == "completed"
+  ```
 
-  ## Usage
-
-  Entities are used in all architectures. In Simple Architecture style they will have basic
-  CRUD functions while Rich-Domain and Event-Driven Architectures will have domain actions.
-
-  Entities can working on state from the Data application, or can create their own struct which
-  is hydrated from the Aggregate Repository.
-
-  ## Implementation
-
-  TypedStruct is used to implement Entity schemas when needed. Simple structs (vs Ecto-based structs)
-  allow for parameterised types, e.g. Maybe.t.
   """
 
   defmodule Metadata do

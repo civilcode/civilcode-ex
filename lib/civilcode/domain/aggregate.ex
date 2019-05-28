@@ -5,6 +5,8 @@ defmodule CivilCode.Aggregate do
     @moduledoc """
     An Entity that is the root of the Aggregate.
 
+    ## From the Experts
+
     Vaughn Vernon describes aggregates best in his book [Domain-Driven Design Distilled](https://books.google.ca/books?id=k9zIDAAAQBAJ&printsec=frontcover&dq=Domain-Driven+Design+Distilled&hl=en&sa=X&redir_esc=y#v=onepage&q=Domain-Driven%20Design%20Distilled&f=false)
 
     > …Aggregate is composed of one or more Entities, where one Entity is called the Aggregate Root.
@@ -51,14 +53,23 @@ defmodule CivilCode.Aggregate do
 
     ## Usage
 
-    Aggregates are only used in Rich-Domains and Event-Based architectures. The root of the
+    Aggregates are only used in __Rich-Domains__ and __Event-Based__ architectures. The root of the
     Aggreate is identified by:
 
         use CivilCode.Aggregate.Root
 
     This provide no additional functionality than:
 
-       use CivilCode.Entity
+        use CivilCode.Entity
+
+    ## Design Constraints
+
+    * Aggregates only refer to other aggregates by ID. This communicates what Entities are included
+      in the aggregate.
+    * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
+    * Consider using a different aggregate for a different transaction boundary, i.e. identify the
+      role it is playing.
+    * Aggregates are deleted together in a `CASCADING DELETE`.
     """
 
     defmacro __using__(_) do
@@ -74,6 +85,10 @@ defmodule CivilCode.Aggregate do
       end
     end
 
+    @doc """
+    A convience function to build a new Entity.
+    """
+    @spec entity(module) :: CivilCode.Entity.t()
     def entity(module) do
       CivilCode.Entity.new(module)
     end

@@ -2,30 +2,29 @@ defmodule CivilCode.DomainEvent do
   @moduledoc """
   A Domain Event captures an important occurrence in the domain.
 
+  ## From the Experts
+
   > A Domain Event is a record of some business-significant occurrence in a Bounded Context. [DDDDistilled p. 99]
 
   ## Usage
 
-  ### Event-Driven Architecture (EDA)
-
-  Other Bounded Contexts subscribe to Domain Events. Use Domain Events for inter-context/application
-  communication (i.e. communicate Sales with Inventory), but not intra-context communication.
-  If multiple aggregates need to be co-ordinated for a single business request in the same context,
+  In an __Event-Driven Architecture (EDA)__ other Bounded Contexts subscribe to Domain Events.
+  Use Domain Events for inter-context/application communication (i.e. communicate Sales with
+  Inventory), but not intra-context communication. If multiple aggregates need to be co-ordinated
+  for a single business request in the same context,
   use a DomainService.
 
   Ref: [Domain events: simple and reliable solution](https://enterprisecraftsmanship.com/2017/10/03/domain-events-simple-and-reliable-solution/)
 
   Only the AggregateRoot produces DomainEvents.
 
-  ### Rich-Domain Architecture
-
-  In a Rich-Domain Architecture an event-bus is not present, therefore inter-context communication
+  In a __Rich-Domain Architecture__ an event-bus is not present, therefore inter-context communication
   MUST BE implemented in the ApplicationService module, not in the Aggregate or Domain Service.
-  This will create a unidirectional coupling, i.e. Sales -> Inventory, i.e. Sales is dependent on
+  This will create a unidirectional coupling, i.e. `Sales` -> `Inventory`, i.e. Sales is dependent on
   Inventory, but not the reverse.
 
   Domain Events MAY BE used to separate business logic from state manipulation even if they
-  are not published. This is a technique to use to provide a level of isolation from Ecto.Changesets.
+  are not published. This is a technique to use to provide a level of isolation from `Ecto.Changesets`.
 
   For example:
 

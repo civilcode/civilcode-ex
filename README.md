@@ -67,23 +67,29 @@ influence for our architecture.
 Beyond key concepts of DDD other related influences are:
 
 * Hexagonal or Ports and Adapters [IDDD pg125]
-* Algebraic Data Types (ADT)
-* Event Storming
-* [Optimize for Deletability](https://vimeo.com/108441214) (i.e. how easy can the module be deleted)
+* Algebraic Data Types (ADT); read [Design with Types](https://fsharpforfunandprofit.com/posts/designing-with-types-intro/#series-toc)
+* Event Storming; watch [Event Storming for Fun and Profit](https://www.youtube.com/watch?v=OcIu-dvrXhY)
 
-## Core Design Principles
+Other references include:
 
-* Validate data at the boundaries
-* Reason about the application with events
+* [Enterprise Craftsmanship - Vladimir Khorikov](https://enterprisecraftsmanship.com)
+
+## Key Design Principles
+
+* Validate data at the boundaries; read [Life at the Boundaries: Conversion and Validation](https://blog.startifact.com/posts/conversion-and-validation.html)
+* Reason about the application with events; watch [The Many Meanings of Event-Driven Architecture](https://www.youtube.com/watch?v=STKCRSUsyP0)
+* Optimize for Deletability; watch [Optimize for Deletability](https://vimeo.com/108441214)
+* Making illegal states unrepresentable; read [Designing with types: Making illegal states unrepresentable](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/)
 
 ## DDD Architecture Styles
 
 DDD provides us with a set of tools to develop an application. We may apply some but not all
-of these building blocks in an application. For example, it would not be appropriate to design an
-application with Domain Events when a simple CRUD style application would suffice. We should always
-choose the simplest style of application appropriate. Often we will start with a Simple Architecture
-and as we experience a pain point, e.g. an update operation not does reflect the complexity of the
-use case, we refactor into a more complex style, such as the Rich-Domain.
+of these building blocks in an application. We provide "Just Enough DDD" as needed. For example,
+it would not be appropriate to design an application with Domain Events when a
+simple CRUD style application would suffice. We should always choose the simplest style of
+application appropriate. Often we will start with a Simple Architecture and as we experience a
+pain point, e.g. an update operation not does reflect the complexity of the use case, we refactor
+into a more complex style, such as the Rich-Domain.
 
 Our styles of application enables us to refactor from one style to another with the less amount
 of friction. Our clients `platform` consists of a number of applications and each of those
@@ -91,7 +97,7 @@ applications may exhibit a different style of DDD.
 
 We have a finite number of application styles:
 
-1. **Simple Architecture**: suitable for CRUD style applications. We should always consider this
+1. **Simple-Domain Architecture**: suitable for CRUD style applications. We should always consider this
    style first.
 2. **Rich-Domain Architecture**: implement concepts from our Event Storming such as commands,
   aggregates, and events with weak (implicit) or strong types (explicit). This is our sweet-spot
@@ -136,8 +142,8 @@ A full directory structure for an application is demonstrated by this example:
                                      order_canceled.ex
                                payment/payment.ex
                                        payment_completed.ex
-                             services/
-                               customer_discount_service.ex
+                               services/
+                                 customer_discount_service.ex
 
 The key directories in this file structure are:
 
@@ -215,9 +221,9 @@ defmodule ProductApplicationService do
   use CivilCode.ApplicationService
 
   @spec new_product() :: Ecto.Changeset.t(Product.t)
-  @spec create_product(Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
+  @spec create_product(Params.t) :: {:ok, Product.t} | {:error, Ecto.Changeset.t(Product.t) }
   @spec edit_product(EntityId.t) :: Ecto.Changeset.t(Product.t)
-  @spec update_product(EntityId.t, Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
+  @spec update_product(EntityId.t, Params.t) :: {:ok, Product.t} | {:error, Ecto.Changeset.t(Product.t) }
 end
 
 # apps/magasin_core/lib/magasin_core/sales/domain/product.ex
@@ -226,8 +232,8 @@ defmodule MagasinCore.Catalog.Product do
 
   @type t :: MagasinData.Catalog.Product.t
 
-  @spec create(Params.t) :: Ecto.Changeset.t(t)
-  @spec update(t, Params.t) :: Ecto.Changeset.t(t)
+  @spec create(Params.t) :: valid_or_invalid_changset :: Ecto.Changeset.t(t)
+  @spec update(t, Params.t) :: valid_or_invalid_changset :: Ecto.Changeset.t(t)
 end
 ```
 
@@ -252,7 +258,7 @@ defmodule MagasinCore.Sales.OrderApplicationService do
 
   @spec handle(PlaceOrder.t) ::
     {:ok, order_id :: EntityId.t} | {:error, BusinessException.t |  RepositoryError.t}
-  @spec handle(CompleteOrder.t) ::
+  @spec handle(CancelOrder.t) ::
     {:ok, order_id :: EntityId.t} | {:error, BusinessException.t | RepositoryError.t}
 end
 
@@ -269,7 +275,7 @@ defmodule MagasinCore.Sales.Order do
 
   @type t :: MagasinData.Sales.Order.t
 
-  @spec place(Product.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
   @spec cancel(t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
 end
 ```
@@ -282,17 +288,19 @@ defmodule MagasinCore.Sales.Order do
   use CivilCode.Entity
 
   embedded_schema do
-    field product_id, CivilCode.EntityId
+    field :email, Email
+    field :product_id, CivilCode.EntityId
+    field :quantity, Quantity
   end
 
-  @spec place(Product.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
   @spec cancel(t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
 end
 ```
 
 ## 3. Event-Driven Architecture
 
-This application style is event-based using Domain Events.
+This application style is event-based using `CivilCode.DomainEvent`.
 
 TODO: Describe this in more detail when we need it.
 
@@ -304,10 +312,11 @@ or alternatively include them in your application specific macros. The building 
 documentation in how to use them in more details that exceeds the scope of this document.
 
 * `CivilCode.ApplicationService` (14)
+* `CivilCode.QueryService`
 * `CivilCode.Entity` (5)
 * `CivilCode.ValueObject` (6)
 * `CivilCode.DomainService` (7)
 * `CivilCode.DomainEvent` (8)
-* `CivilCode.Aggregate` (10)
+* `CivilCode.Aggregate.Root` (10)
 *  Factory (11)
 * `CivilCode.Repository` (12)

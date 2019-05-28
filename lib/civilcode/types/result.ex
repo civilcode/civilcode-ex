@@ -1,5 +1,7 @@
 defmodule CivilCode.Result do
-  @moduledoc false
+  @moduledoc """
+  See [Railway oriented programming](https://fsharpforfunandprofit.com/posts/recipe-part2/).
+  """
 
   @type ok(any) :: {:ok, any}
   @type error(any) :: {:error, any}

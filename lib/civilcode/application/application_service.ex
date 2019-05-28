@@ -2,6 +2,8 @@ defmodule CivilCode.ApplicationService do
   @moduledoc """
   Fulfills a business request by handling the infrastructure and delegating to the domain model.
 
+  # From the Experts
+
   > The Application Services are the direct clients of the domain model. For options on the logical
   > location of Application Service, see Architecture (4). These are responsible for task
   > coordination of use case flows, one service method per flow. When using an ACID database,
@@ -29,29 +31,29 @@ defmodule CivilCode.ApplicationService do
   2. Delegate to the Aggregate by invoking a domain actin (pure function)
   3. Persisting the Aggregate to the Repository (impure function)
 
-  In a Simple Architecture, functions are named representing the CRUD operation, e.g.
+  In a __Simple-Domain__ Architecture, functions are named representing the CRUD operation, e.g.
 
-    defmodule ProductApplicationService do
-      use CivilCode.ApplicationService
+      defmodule ProductApplicationService do
+        use CivilCode.ApplicationService
 
-      @spec new_product() :: Ecto.Changeset.t(Product.t)
-      @spec create_product(Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
-      @spec edit_product(EntityId.t) :: Ecto.Changeset.t(Product.t)
-      @spec update_product(EntityId.t, Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
-    end
+        @spec new_product() :: Ecto.Changeset.t(Product.t)
+        @spec create_product(Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
+        @spec edit_product(EntityId.t) :: Ecto.Changeset.t(Product.t)
+        @spec update_product(EntityId.t, Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
+      end
 
-  In a Rich-Domain or Event-Based Architecture an ApplicationService will have a single `handle/1`
-  function which pattern matches on the command. In this instance, the ApplicationService
+  In a __Rich-Domain__ or __Event-Based__ Architecture an ApplicationService will have a single
+  `handle/1` function which pattern matches on the command. In this instance, the ApplicationService
   becomes a command handler. For example:
 
-    defmodule MagasinCore.Sales.OrderApplicationService do
-      use CivilCode.ApplicationService
+      defmodule MagasinCore.Sales.OrderApplicationService do
+        use CivilCode.ApplicationService
 
-      @spec handle(PlaceOrder.t) ::
-        {:ok, order_id :: EntityId.t} | {:error, BusinessException.t |  RepositoryError.t}
-      @spec handle(CompleteOrder.t) ::
-        {:ok, order_id :: EntityId.t} | {:error, BusinessException.t | RepositoryError.t}
-    end
+        @spec handle(PlaceOrder.t) ::
+          {:ok, order_id :: EntityId.t} | {:error, BusinessException.t |  RepositoryError.t}
+        @spec handle(CompleteOrder.t) ::
+          {:ok, order_id :: EntityId.t} | {:error, BusinessException.t | RepositoryError.t}
+      end
   """
 
   defmacro __using__(_) do

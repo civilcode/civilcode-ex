@@ -2,6 +2,8 @@ defmodule CivilCode.ProcessManager do
   @moduledoc """
   A Process Manager integrates with multiple bounded contexts to perform a larger task.
 
+  ## From the Experts
+
   > Sometimes business processes span multiple bounded contexts. For these cases, you employ the
   > use of a process manager to coordinate business tasks. Figure 8-15 shows a process manager that
   > contains business task logic to coordinate larger processes. Similar to the application services,

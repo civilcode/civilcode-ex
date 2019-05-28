@@ -1,8 +1,7 @@
 defmodule CivilCode.Maybe do
   @moduledoc """
-  Handles the presences of a value. Based on the F# type:
-
-  https://fsharpforfunandprofit.com/posts/the-option-type/
+  Handles the presences of a value. Based on the F# type.
+  See [The Option type](https://fsharpforfunandprofit.com/posts/the-option-type/)
   """
   use Currying
 

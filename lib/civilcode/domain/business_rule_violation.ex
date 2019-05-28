@@ -2,17 +2,17 @@ defmodule CivilCode.BusinessRuleViolation do
   @moduledoc """
   A voliation of a business rule when an Entity executes a domain action.
 
-  ## Example
+  ## Usage
+
+  Used in Rich-Domain and Event-Driven Architectures.
+
+  An example:
 
       if in_stock?(quantity)
         update(%StockItemDeplinished{quantity: quantity})
       else
         {:error, OutOfStock.new(entity: stock_item)}
       end
-
-  ## Usage
-
-  Used in Rich-Domain and Event-Driven Architectures.
   """
 
   defmacro __using__(_) do
