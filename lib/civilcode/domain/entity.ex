@@ -145,9 +145,9 @@ defmodule CivilCode.Entity do
   @doc """
   Put changes for the entity and the event.
   """
-  @spec put_change(t | Ecto.Changeset.t(), event :: map, fields :: map | Keyword.t()) ::
+  @spec change(t | Ecto.Changeset.t(), event :: map, fields :: map | Keyword.t()) ::
           Ecto.Changeset.t()
-  def put_change(entity, event, fields) do
+  def change(entity, event, fields) do
     metadata = %{entity.__entity__() | events: entity.__entity__.events ++ [event]}
     Ecto.Changeset.change(%{entity | __entity__: metadata}, fields)
   end
