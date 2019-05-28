@@ -64,7 +64,7 @@ defmodule CivilCode.Repository do
     @doc """
     Persists the aggregate in the Repository.
     """
-    @callback save(Entity.t()) :: Result.t(Entity.t())
+    @callback save(Entity.t() | Ecto.Changeset.t()) :: Result.t(Entity.t())
   end
 
   defmacro __using__(_) do

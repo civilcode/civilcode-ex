@@ -58,7 +58,7 @@ defmodule CivilCode.ApplicationService do
 
   defmacro __using__(_) do
     quote do
-      alias CivilCode.RepositoryError
+      alias CivilCode.{RepositoryError, Result}
     end
   end
 end

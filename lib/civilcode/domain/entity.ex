@@ -89,7 +89,6 @@ defmodule CivilCode.Entity do
 
       order.state == "completed"
   ```
-
   """
 
   defmodule Metadata do
@@ -97,7 +96,7 @@ defmodule CivilCode.Entity do
 
     @type t :: %__MODULE__{}
 
-    defstruct events: [], changes: [], assigns: %{}
+    defstruct events: [], assigns: %{}
   end
 
   @type t :: %{optional(atom) => any, __struct__: atom, __entity__: Metadata.t()}
@@ -105,22 +104,26 @@ defmodule CivilCode.Entity do
   defmacro __using__(_) do
     quote do
       import CivilCode.Entity
-    end
-  end
 
-  defmacro typedstruct(do: block) do
-    quote do
-      use TypedStruct
-
-      TypedStruct.typedstruct do
-        unquote(block)
-        field(:__entity__, Metadata.t())
+      def new(attrs \\ []) do
+        struct!(__MODULE__, attrs)
       end
     end
   end
 
-  def new(module, attrs \\ []) do
-    struct!(module, attrs ++ [__entity__: struct!(Metadata)])
+  defmacro embedded_schema(do: block) do
+    quote do
+      use Ecto.Schema
+
+      @type t :: %__MODULE__{}
+
+      @primary_key false
+
+      Ecto.Schema.embedded_schema do
+        unquote(block)
+        field(:__entity__, :map, default: %Metadata{})
+      end
+    end
   end
 
   @doc """
@@ -139,6 +142,16 @@ defmodule CivilCode.Entity do
     entity.__entity__.assigns[key]
   end
 
+  @doc """
+  Put changes for the entity and the event.
+  """
+  @spec put_change(t | Ecto.Changeset.t(), event :: map, fields :: map | Keyword.t()) ::
+          Ecto.Changeset.t()
+  def put_change(entity, event, fields) do
+    metadata = %{entity.__entity__() | events: entity.__entity__.events ++ [event]}
+    Ecto.Changeset.change(%{entity | __entity__: metadata}, fields)
+  end
+
   # REPOSITORY RELATED FUNCTIONS
 
   @doc """
@@ -152,53 +165,5 @@ defmodule CivilCode.Entity do
   def build(module, state) do
     fields = state |> Map.from_struct() |> Enum.into([])
     struct(module, fields ++ [__entity__: struct!(Metadata)])
-  end
-
-  @doc """
-  Get the fields from an entity and returns them as a map. This is commonly used to build a
-  changeset in a Repository.
-
-  Example:
-
-    Entity.get_fields(order, [:id, :email, :product_id, :quantity])
-  """
-  @spec get_fields(t, list(atom)) :: map
-  def get_fields(entity, fields) do
-    entity
-    |> Map.from_struct()
-    |> Map.take(fields)
-  end
-
-  @doc """
-  Puts the changes for an entity. This allows tracking of changes which can later be used
-  in the Repository.
-  """
-  @spec put_changes(struct, Keyword.t()) :: struct
-  def put_changes(struct, changes) do
-    struct!(struct, changes ++ [__entity__: struct!(struct.__entity__, changes: changes)])
-  end
-
-  # EVENT RELATED FUNCTIONS
-
-  @doc """
-  Updates the state of the entity based on event returned by the function. If the function
-  returns an error result the entity will not be updated. The event will be tracked so it maybe
-  published later.
-  """
-  def update(entity, func) do
-    case func.(entity) do
-      {:error, violation} -> {:error, violation}
-      {:ok, event} -> do_update(entity, event)
-      event -> do_update(entity, event)
-    end
-  end
-
-  defp do_update(entity, event) do
-    updated_state = apply(entity.__struct__, :apply, [entity, event])
-
-    updated_entity =
-      struct!(updated_state, __entity__: struct!(updated_state.__entity__, events: [event]))
-
-    {:ok, updated_entity}
   end
 end

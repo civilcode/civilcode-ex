@@ -11,6 +11,8 @@ defmodule CivilCode.ValueObject.Composite do
 
       use Ecto.Schema
 
+      @primary_key false
+
       import Ecto.Changeset
 
       def new(params) do

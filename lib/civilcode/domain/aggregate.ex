@@ -76,21 +76,8 @@ defmodule CivilCode.Aggregate do
       quote do
         use CivilCode.Entity
 
-        import Kernel, except: [apply: 2]
-        import CivilCode.Aggregate.Root
-
-        def new(attrs) do
-          CivilCode.Entity.new(__MODULE__, attrs)
-        end
+        alias CivilCode.Result
       end
-    end
-
-    @doc """
-    A convience function to build a new Entity.
-    """
-    @spec entity(module) :: CivilCode.Entity.t()
-    def entity(module) do
-      CivilCode.Entity.new(module)
     end
   end
 end
