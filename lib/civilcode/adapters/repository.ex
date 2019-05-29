@@ -49,6 +49,9 @@ defmodule CivilCode.Repository do
     The behaviour for a repository.
     """
 
+    @typedoc """
+    The struct representating a specific entity id, e.g. `ProductId.t/0`
+    """
     @type id :: %{__struct__: atom, value: EntityId.t()}
 
     @doc """
@@ -59,36 +62,53 @@ defmodule CivilCode.Repository do
     @doc """
     Retrieves an aggregate from the Repository.
     """
-    @callback get(id) :: Aggregate.t()
+    @callback get(id) :: {:ok, Aggregate.t()} | {:error, RepositoryError.t()}
 
     @doc """
     Persists the aggregate in the Repository.
     """
-    @callback save(Entity.t() | Ecto.Changeset.t()) :: Result.t(Entity.t())
+    @callback save(Entity.t() | Ecto.Changeset.t()) ::
+                {:ok, Aggregate.t()} | {:error, RepositoryError.t()}
   end
 
-  defmacro __using__(_) do
-    quote do
-      alias CivilCode.{Entity, RepositoryError, Result}
+  defmacro __using__(opts) do
+    repo = Keyword.fetch!(opts, :repo)
 
+    quote do
       @behaviour Behaviour
 
-      @doc """
-      Builds an Entity from a database record.
+      alias CivilCode.{Entity, RepositoryError, Result}
 
-      Example:
+      alias unquote(repo)
 
-          build(Order, fn ->
-            Repo.get!(Record, order_id)
-          end)
-      """
-      def build(module, func) do
-        record = func.()
+      import CivilCode.Repository
 
-        module
-        |> Entity.build(record)
-        |> Entity.put_assigns(:record, record)
+      def transaction(fun, opts \\ []) do
+        case unquote(repo).transaction(fun, opts) do
+          # Unwrap the embedded result
+          {:ok, {:ok, payload}} -> {:ok, payload}
+          {:error, {:error, payload}} -> {:error, payload}
+        end
       end
     end
+  end
+
+  @doc """
+  Loads a custom Entity Schema from a database record.
+
+  Example:
+      Record
+      |> Repo.lock()
+      |> Repo.get!(order_id)
+      |> load(Order)
+  """
+  @spec load(Entity.t() | nil, module) :: {:ok, Entity.t()} | {:error, :not_found}
+  def load(nil, _module), do: {:error, :not_found}
+
+  def load(record, module) do
+    module
+    |> Entity.build(record)
+    |> Entity.put_assigns(:record, record)
+    |> Result.ok()
   end
 end

@@ -220,10 +220,10 @@ An example based on modules and typespecs:
 defmodule ProductApplicationService do
   use CivilCode.ApplicationService
 
-  @spec new_product() :: Ecto.Changeset.t(Product.t)
-  @spec create_product(Params.t) :: {:ok, Product.t} | {:error, Ecto.Changeset.t(Product.t) }
-  @spec edit_product(EntityId.t) :: Ecto.Changeset.t(Product.t)
-  @spec update_product(EntityId.t, Params.t) :: {:ok, Product.t} | {:error, Ecto.Changeset.t(Product.t) }
+  @spec new_product() :: Changeset.t(Product.t)
+  @spec create_product(Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t) }
+  @spec edit_product(EntityId.t) :: Changeset.t(Product.t)
+  @spec update_product(EntityId.t, Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t) }
 end
 
 # apps/magasin_core/lib/magasin_core/sales/domain/product.ex
@@ -232,8 +232,8 @@ defmodule MagasinCore.Catalog.Product do
 
   @type t :: MagasinData.Catalog.Product.t
 
-  @spec create(Params.t) :: valid_or_invalid_changset :: Ecto.Changeset.t(t)
-  @spec update(t, Params.t) :: valid_or_invalid_changset :: Ecto.Changeset.t(t)
+  @spec create(Params.t) :: valid_or_invalid_changset :: Changeset.t(t)
+  @spec update(t, Params.t) :: valid_or_invalid_changset :: Changeset.t(t)
 end
 ```
 
@@ -275,8 +275,8 @@ defmodule MagasinCore.Sales.Order do
 
   @type t :: MagasinData.Sales.Order.t
 
-  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
-  @spec cancel(t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
+  @spec cancel(t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
 end
 ```
 
@@ -293,8 +293,8 @@ defmodule MagasinCore.Sales.Order do
     field :quantity, Quantity
   end
 
-  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
-  @spec cancel(t) :: {:ok, Ecto.Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
+  @spec cancel(t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
 end
 ```
 

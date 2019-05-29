@@ -45,7 +45,7 @@ defmodule CivilCode.Command do
           embeds_one :shipping_address, Address
         end
 
-        @spec new(Params.t()) :: Result.ok(t) | Result.error(Ecto.Changeset.t(t))
+        @spec new(Params.t()) :: Result.ok(t) | Result.error(Changeset.t(t))
         def new(params) do
           __MODULE__
           |> struct
@@ -73,6 +73,7 @@ defmodule CivilCode.Command do
       import Ecto.Changeset
       import CivilCode.Command
 
+      alias Ecto.Changeset
       alias CivilCode.{Params, Result}
 
       @primary_key false

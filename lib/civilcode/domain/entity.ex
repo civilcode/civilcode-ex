@@ -26,24 +26,26 @@ defmodule CivilCode.Entity do
   CRUD functions, i.e. `create` and `update` while __Rich-Domain__ and __Event-Driven__ Architectures will
   have domain actions.
 
-  Entities can working on state from the Data application, or can create their own struct which
-  is hydrated from the Aggregate Repository.
+  Entities can working on state from the Data application, known as the Data schema, or can create
+  their own struct which is loaded from the Aggregate Repository.
 
   Domain Actions will always return a valid `Ecto.Changeset.t()` unless a business rule has been violated
   then a `CivilCode.BusinessException.t()` result will be returned.
+
+  ## Examples
 
   The three examples below demonstrate a domain action in the different architecture styles:
 
       # Simple-Domain
 
-      @spec deplenish(t, Params.t) :: Ecto.Changeset.t(t)
+      @spec deplenish(t, Params.t) :: Changeset.t(t)
       def deplenish(stock_item, params) do
         cast(stock_item, params, [:count_on_hand]
       end
 
       # Rich-Domain
 
-      @spec deplenish(t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)}, {:error, OutOfStock.t}
+      @spec deplenish(t, Quantity.t) :: {:ok, Changeset.t(t)}, {:error, OutOfStock.t}
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
@@ -57,7 +59,7 @@ defmodule CivilCode.Entity do
 
       # Event-Based
 
-      @spec deplenish(t, Quantity.t) :: {:ok, Ecto.Changeset.t(t)}, {:error, OutOfStock.t}
+      @spec deplenish(t, Quantity.t) :: {:ok, Changeset.t(t)}, {:error, OutOfStock.t}
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
@@ -73,8 +75,8 @@ defmodule CivilCode.Entity do
 
   ## Design Constraints
 
-   * TypedStruct is used to implement Entity schemas when needed. Simple structs (vs Ecto-based structs)
-     allow for parameterised types, e.g. Maybe.t.
+  For all architecture styles:
+
   * `Ecto.Changeset.validate_required/2` is the only validation function allowed in Entities, other
     funtions such as `Ecto.Changeset.validate_format/3` are not allowed as ValueObjects handle
     the validation of values.
@@ -89,6 +91,36 @@ defmodule CivilCode.Entity do
 
       order.state == "completed"
   ```
+  * Data Schemas can be alias normally as if they were lived in the "core" application.
+    This reduces the amount of noise that would occur in the module when referencing with
+    the full module path.
+  ```
+      # lib/magasin_core/sales/domain/order/order.ex
+      defmodule MagasinCore.Sales.Order do
+        use CivilCode.Entity
+
+        alias MagasinData.Catalog
+        alias MagasinData.Sales.Order
+      end
+  ```
+  * Create a type `t/0` with Data Schema as this will simplify typespec signatures and make
+    refactoring to a Custom schema later if required. Then all of the modules in the "core"
+    application can reference that alias:
+
+  ```
+      # lib/magasin_core/sales/domain/order/order.ex
+      defmodule MagasinCore.Sales.Order do
+        use CivilCode.Entity
+
+        alias MagasinData.Sales.Order
+
+        @type t :: Order.t
+      end
+  ```
+
+  Rich-Domain and Event-Based:
+
+  * Ecto Schema is used to implement Entity schemas when needed.
   """
 
   defmodule Metadata do
@@ -104,6 +136,8 @@ defmodule CivilCode.Entity do
   defmacro __using__(_) do
     quote do
       import CivilCode.Entity
+
+      alias Ecto.Changeset
 
       def new(attrs \\ []) do
         struct!(__MODULE__, attrs)

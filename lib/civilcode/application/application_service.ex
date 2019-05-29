@@ -21,7 +21,7 @@ defmodule CivilCode.ApplicationService do
       defmodule MagasinCore.Sales.OrderApplicationService do
         use CivilCode.ApplicationService
 
-        # Delegates to MagasinCore.Slaes.Order
+        # Delegates to MagasinCore.Sales.Order
       end
 
   The use case functions typically follow as follow forming a functional sandwich (impure, pure,
@@ -31,20 +31,31 @@ defmodule CivilCode.ApplicationService do
   2. Delegate to the Aggregate by invoking a domain actin (pure function)
   3. Persisting the Aggregate to the Repository (impure function)
 
-  In a __Simple-Domain__ Architecture, functions are named representing the CRUD operation, e.g.
+  Simple-Domain:
+
+  Functions are named representing the CRUD operation, e.g.
 
       defmodule ProductApplicationService do
         use CivilCode.ApplicationService
 
-        @spec new_product() :: Ecto.Changeset.t(Product.t)
-        @spec create_product(Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
-        @spec edit_product(EntityId.t) :: Ecto.Changeset.t(Product.t)
-        @spec update_product(EntityId.t, Params.t) :: Product.t | Ecto.Changeset.t(Product.t)
+        @spec new_product() :: Changeset.t(Product.t)
+        @spec create_product(Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t)}
+        @spec edit_product(EntityId.t) :: Changeset.t(Product.t)
+        @spec update_product(EntityId.t, Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t)}
       end
 
-  In a __Rich-Domain__ or __Event-Based__ Architecture an ApplicationService will have a single
-  `handle/1` function which pattern matches on the command. In this instance, the ApplicationService
-  becomes a command handler. For example:
+  An ApplicationService may raise exceptions with repository actions, since these are used by
+  controllers only:
+
+      `Repo.get!(Product, product_id)`
+
+  A test for Simple-Domain Application Services are typically not necessary as they are tested
+  through the controller and the Entity domain actions are unit tested.
+
+  Rich-Domain and Event-Based:
+
+  An ApplicationService will have a single `handle/1` function which pattern matches on the command.
+  In this instance, the ApplicationService becomes a command handler. For example:
 
       defmodule MagasinCore.Sales.OrderApplicationService do
         use CivilCode.ApplicationService
@@ -54,10 +65,14 @@ defmodule CivilCode.ApplicationService do
         @spec handle(CompleteOrder.t) ::
           {:ok, order_id :: EntityId.t} | {:error, BusinessException.t | RepositoryError.t}
       end
+
+  Rich-Domain will access the aggregate via a Repository that does not raise exceptions, it only
+  returns `CivilCode.RepositoryError.t`.
   """
 
   defmacro __using__(_) do
     quote do
+      alias Ecto.Changeset
       alias CivilCode.{RepositoryError, Result}
     end
   end

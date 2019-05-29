@@ -64,6 +64,8 @@ defmodule CivilCode.Aggregate do
 
     ## Design Constraints
 
+    Rich-Domain and Event-Based:
+
     * Aggregates only refer to other aggregates by ID. This communicates what Entities are included
       in the aggregate.
     * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
@@ -76,6 +78,7 @@ defmodule CivilCode.Aggregate do
       quote do
         use CivilCode.Entity
 
+        alias Ecto.Changeset
         alias CivilCode.Result
       end
     end
