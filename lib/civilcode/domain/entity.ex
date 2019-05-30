@@ -23,10 +23,10 @@ defmodule CivilCode.Entity do
   type. The domain actions have no side effects, i.e. no indirect inputs, e.g. env, time.
 
   Entities are used in all architectures. In __Simple-Domain__ Architecture style they will have basic
-  CRUD functions, i.e. `create` and `update` while __Rich-Domain__ and __Event-Driven__ Architectures will
+  CRUD functions, i.e. `create` and `update` while __Rich-Domain__ Architectures will
   have domain actions.
 
-  Entities can working on state from the Data application, known as the Data schema, or can create
+  Entities can working on state from the Data application, known as a `CivilCode.Record`, or can create
   their own struct which is loaded from the Aggregate Repository.
 
   Domain Actions will always return a valid `Ecto.Changeset.t()` unless a business rule has been violated
@@ -57,7 +57,7 @@ defmodule CivilCode.Entity do
         end
       end
 
-      # Event-Based
+      # Rich-Domain with DomainEvent
 
       @spec deplenish(t, Quantity.t) :: {:ok, Changeset.t(t)}, {:error, OutOfStock.t}
       def deplenish(stock_item, quantity) do
@@ -91,7 +91,7 @@ defmodule CivilCode.Entity do
 
       order.state == "completed"
   ```
-  * Data Schemas can be alias normally as if they were lived in the "core" application.
+  * A `CivilCode.Record` can be alias normally as if they were lived in the "core" application.
     This reduces the amount of noise that would occur in the module when referencing with
     the full module path.
   ```
@@ -100,10 +100,10 @@ defmodule CivilCode.Entity do
         use CivilCode.Entity
 
         alias MagasinData.Catalog
-        alias MagasinData.Sales.Order
+        alias MagasinData.Sales.OrderRecord
       end
   ```
-  * Create a type `t/0` with Data Schema as this will simplify typespec signatures and make
+  * Create a type `t/0` for a `CivilCode.Record` as this will simplify typespec signatures and make
     refactoring to a Custom schema later if required. Then all of the modules in the "core"
     application can reference that alias:
 
@@ -112,13 +112,13 @@ defmodule CivilCode.Entity do
       defmodule MagasinCore.Sales.Order do
         use CivilCode.Entity
 
-        alias MagasinData.Sales.Order
+        alias MagasinData.Sales.OrderRecord
 
-        @type t :: Order.t
+        @type t :: OrderRecord.t
       end
   ```
 
-  Rich-Domain and Event-Based:
+  Rich-Domain:
 
   * Ecto Schema is used to implement Entity schemas when needed.
   """
@@ -128,15 +128,17 @@ defmodule CivilCode.Entity do
 
     @type t :: %__MODULE__{}
 
-    defstruct events: [], assigns: %{}
+    defstruct events: [], record: nil
   end
 
-  @type t :: %{optional(atom) => any, __struct__: atom, __entity__: Metadata.t()}
+  @type t :: %{optional(atom) => any, __struct__: atom, __civilcode__: Metadata.t()}
 
   defmacro __using__(_) do
     quote do
       import CivilCode.Entity
+      import Ecto.Changeset
 
+      alias CivilCode.Result
       alias Ecto.Changeset
 
       def new(attrs \\ []) do
@@ -155,25 +157,9 @@ defmodule CivilCode.Entity do
 
       Ecto.Schema.embedded_schema do
         unquote(block)
-        field(:__entity__, :map, default: %Metadata{})
+        field(:__civilcode__, :map, default: %Metadata{})
       end
     end
-  end
-
-  @doc """
-  Provides a space to place any kinda of data onto the entity. For example, the Repository uses
-  it to track the original record used to build an Entity.
-  """
-  @spec put_assigns(t, atom, any) :: t
-  def put_assigns(entity, key, value) do
-    new_assigns = Map.put(entity.__entity__.assigns, key, value)
-    updated_metadata = struct!(entity.__entity__, assigns: new_assigns)
-    struct!(entity, __entity__: updated_metadata)
-  end
-
-  @spec get_assigns(t, atom) :: any
-  def get_assigns(entity, key) do
-    entity.__entity__.assigns[key]
   end
 
   @doc """
@@ -182,8 +168,11 @@ defmodule CivilCode.Entity do
   @spec change(t | Ecto.Changeset.t(), event :: map, fields :: map | Keyword.t()) ::
           Ecto.Changeset.t()
   def change(entity, event, fields) do
-    metadata = %{entity.__entity__() | events: entity.__entity__.events ++ [event]}
-    Ecto.Changeset.change(%{entity | __entity__: metadata}, fields)
+    existing_events = get_metadata(entity, :events)
+
+    entity
+    |> put_metadata(:events, existing_events ++ [event])
+    |> Ecto.Changeset.change(fields)
   end
 
   # REPOSITORY RELATED FUNCTIONS
@@ -198,6 +187,27 @@ defmodule CivilCode.Entity do
   @spec build(module, struct) :: t
   def build(module, state) do
     fields = state |> Map.from_struct() |> Enum.into([])
-    struct(module, fields ++ [__entity__: struct!(Metadata)])
+    struct(module, fields ++ [__civilcode__: struct!(Metadata)])
   end
+
+  @doc """
+  Store the original database record used to build the entity.
+  """
+  @spec put_record(t, Ecto.Schema.t()) :: t
+  def put_record(entity, record) do
+    put_metadata(entity, :record, record)
+  end
+
+  @doc """
+  Fetch the original database record used to build the entity.
+  """
+  @spec get_record(t) :: Ecto.Schema.t()
+  def get_record(entity), do: entity.__civilcode__.record
+
+  defp put_metadata(entity, key, value) do
+    metadata = %{entity.__civilcode__ | key => value}
+    %{entity | __civilcode__: metadata}
+  end
+
+  defp get_metadata(entity, key), do: Map.fetch!(entity.__civilcode__, key)
 end

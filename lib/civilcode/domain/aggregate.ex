@@ -53,7 +53,7 @@ defmodule CivilCode.Aggregate do
 
     ## Usage
 
-    Aggregates are only used in __Rich-Domains__ and __Event-Based__ architectures. The root of the
+    Aggregates are only used in a __Rich-Domains__. The root of the
     Aggreate is identified by:
 
         use CivilCode.Aggregate.Root
@@ -64,13 +64,14 @@ defmodule CivilCode.Aggregate do
 
     ## Design Constraints
 
-    Rich-Domain and Event-Based:
+    Rich-Domain:
 
+    * Consider using a __different aggregate for a different transaction boundary__, i.e. identify the
+      role, state or concern of an aggregate. For example, an `Order` has multiple states that
+      alter it's transaction boundaries, e.g. `PendingOrder`, `PaidOrder`, `ShippedOrder`.
     * Aggregates only refer to other aggregates by ID. This communicates what Entities are included
       in the aggregate.
     * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
-    * Consider using a different aggregate for a different transaction boundary, i.e. identify the
-      role it is playing.
     * Aggregates are deleted together in a `CASCADING DELETE`.
     """
 

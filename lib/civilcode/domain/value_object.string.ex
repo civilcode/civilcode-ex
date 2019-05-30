@@ -18,7 +18,7 @@ defmodule CivilCode.ValueObject.String do
       end
 
       def new(_value) do
-        Result.error(:must_be_a_string)
+        Result.error("is invalid")
       end
 
       defoverridable new: 1
@@ -37,8 +37,12 @@ defmodule CivilCode.ValueObject.String do
         |> to_ecto_result
       end
 
-      defp to_ecto_result({:ok, value}), do: Result.ok(value)
-      defp to_ecto_result({:error, _}), do: :error
+      defp to_ecto_result(result) do
+        case result do
+          {:ok, value} -> Result.ok(value)
+          {:error, msg} -> Result.error(message: msg)
+        end
+      end
 
       @impl true
       def load(value), do: new(value)

@@ -49,7 +49,18 @@ defmodule CivilCode.ValueObject do
           field :postal_code, PostalCode
         end
       end
+
+  An enum example:
+
+      defmodule MagasinData.OrderState do
+        use CivilCode.ValueObject, type: :enum, values: [:pending, :paid, :shipped]
+      end
   """
+  def enum(opts) do
+    quote do
+      use CivilCode.ValueObject.Enum, unquote(opts)
+    end
+  end
 
   def string(_) do
     quote do

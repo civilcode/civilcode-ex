@@ -11,9 +11,15 @@ defmodule CivilCode.ValueObject.Uuid do
         field(:value, String.t())
       end
 
-      @spec new(String.t()) :: {:ok, t} | {:error, :must_be_uuid}
-      def new(value) when is_nil(value), do: Result.error(:must_be_uuid)
-      def new(value) when not is_binary(value), do: Result.error(:must_be_uuid)
+      defimpl String.Chars do
+        def to_string(struct) do
+          to_string(struct.value)
+        end
+      end
+
+      @spec new(String.t()) :: {:ok, t} | {:error, String.t()}
+      def new(value) when is_nil(value), do: Result.error("is invalid")
+      def new(value) when not is_binary(value), do: Result.error("is invalid")
 
       def new(value) do
         __MODULE__
@@ -35,8 +41,12 @@ defmodule CivilCode.ValueObject.Uuid do
         |> to_ecto_result
       end
 
-      defp to_ecto_result({:ok, value}), do: Result.ok(value)
-      defp to_ecto_result({:error, _}), do: :error
+      defp to_ecto_result(result) do
+        case result do
+          {:ok, value} -> Result.ok(value)
+          {:error, msg} -> Result.error(message: msg)
+        end
+      end
 
       @impl true
       def load(value) when is_binary(value) do

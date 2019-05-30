@@ -52,7 +52,7 @@ defmodule CivilCode.ApplicationService do
   A test for Simple-Domain Application Services are typically not necessary as they are tested
   through the controller and the Entity domain actions are unit tested.
 
-  Rich-Domain and Event-Based:
+  Rich-Domain:
 
   An ApplicationService will have a single `handle/1` function which pattern matches on the command.
   In this instance, the ApplicationService becomes a command handler. For example:

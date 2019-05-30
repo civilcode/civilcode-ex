@@ -23,7 +23,7 @@ defmodule CivilCode.Command do
 
   ## Usage
 
-  __Rich-Domain__ and __Event-Driven__ Architecture MUST use Commands as Entities in these architectures
+  A __Rich-Domain__ Architecture MUST use Commands as Entities in these architectures
   accept Value Objects only, i.e. not `CivilCode.Params.t`.
 
   This Command implementation uses Ecto, so it integrates with Phoenix forms seamlessly and
@@ -70,7 +70,7 @@ defmodule CivilCode.Command do
 
       @type t :: %__MODULE__{}
 
-      import Ecto.Changeset
+      import Ecto.Changeset, except: [cast: 3, cast: 4, apply_action: 2]
       import CivilCode.Command
 
       alias Ecto.Changeset
@@ -79,4 +79,19 @@ defmodule CivilCode.Command do
       @primary_key false
     end
   end
+
+  @doc """
+  Overrides `Ecto.Changeset.cast/4` to accept `params` as a `Keyword.t`, as well as a `map`.
+  """
+  def cast(data, params, permitted, opts \\ []) do
+    Ecto.Changeset.cast(data, ensure_map(params), permitted, opts)
+  end
+
+  defp ensure_map(params), do: Enum.into(params, %{})
+
+  @doc """
+  Applies the changes to the changeset using `Ecto.Changeset.apply_action/2`. This provides
+  a level of abstraction so the developer does not need to think what `action` to use.
+  """
+  def apply(changeset), do: Ecto.Changeset.apply_action(changeset, :update)
 end

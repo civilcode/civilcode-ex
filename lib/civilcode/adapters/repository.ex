@@ -33,7 +33,7 @@ defmodule CivilCode.Repository do
     complex query against the persistence mechanism, dynamically placing the results into a
     Value Object (6) specifically designed to address the needs of the use case. [IDDD, p. 517]
 
-  Repositories MUST BE used for __Rich-Domain__ and __Event-Driven__ Architectures.
+  Repositories MAYBE BE used for __Rich-Domain__ Architectures.
 
   Both of these architectures require Commands which cast Params to Value Objects, it is the
   invalid Command in the form of a `Ecto.Changeset.t()` that is returned to the client. Although,
@@ -108,7 +108,9 @@ defmodule CivilCode.Repository do
   def load(record, module) do
     module
     |> Entity.build(record)
-    |> Entity.put_assigns(:record, record)
+    |> Entity.put_record(record)
     |> Result.ok()
   end
+
+  defdelegate get_record(entity), to: Entity
 end

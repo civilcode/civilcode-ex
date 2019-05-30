@@ -4,7 +4,7 @@ defmodule CivilCode.BusinessRuleViolation do
 
   ## Usage
 
-  Used in Rich-Domain and Event-Driven Architectures.
+  Used in a Rich-Domain.
 
   An example:
 

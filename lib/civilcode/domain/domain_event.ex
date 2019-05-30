@@ -8,7 +8,7 @@ defmodule CivilCode.DomainEvent do
 
   ## Usage
 
-  In an __Event-Driven Architecture (EDA)__ other Bounded Contexts subscribe to Domain Events.
+  In a __Rich-Domain__ other Bounded Contexts subscribe to Domain Events.
   Use Domain Events for inter-context/application communication (i.e. communicate Sales with
   Inventory), but not intra-context communication. If multiple aggregates need to be co-ordinated
   for a single business request in the same context,
@@ -28,22 +28,19 @@ defmodule CivilCode.DomainEvent do
 
   For example:
 
-      # Public API
-
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
-            {:ok, apply(stock_item, StockItemAdjusted.new(stock_item_id: state.id, new_count_on_hand: new_count_on_hand)) }
+            stock_item_adjusted =
+              StockItemAdjusted.new(stock_item_id: stock_item.id, new_count_on_hand: new_count_on_hand)
+
+            stock_item
+            |> change(stock_item_adjusted, count_on_hand: new_count_on_hand)
+            |> Result.ok()
+
           {:error, _} ->
             {:error, OutOfStock.new(entity: stock_item)}
         end
-      end
-
-      # State Mutators
-
-      @doc false
-      def apply(stock_item, %StockItemAdjusted{} = event) do
-        put_changes(stock_item, count_on_hand: event.new_count_on_hand)
       end
   """
 
