@@ -14,7 +14,39 @@ defmodule CivilCode.MixProject do
       deps: deps(),
       docs: [
         main: "readme",
-        extras: ["README.md"]
+        extras: ["README.md"],
+        groups_for_modules: [
+          "Adapters for Ports": [
+            CivilCode.Repository,
+            CivilCode.Repository.Behaviour,
+            CivilCode.RepositoryError
+          ],
+          Application: [
+            CivilCode.ApplicationService,
+            CivilCode.Command,
+            CivilCode.Params,
+            CivilCode.ProcessManager,
+            CivilCode.QueryResult,
+            CivilCode.QueryService
+          ],
+          Data: [
+            CivilCode.Record
+          ],
+          "Domain Model": [
+            CivilCode.Aggregate.Root,
+            CivilCode.BusinessRuleViolation,
+            CivilCode.Entity,
+            CivilCode.EntityId,
+            CivilCode.DomainEvent,
+            CivilCode.DomainService,
+            CivilCode.ValueObject
+          ],
+          Types: [
+            CivilCode.Maybe,
+            CivilCode.Result,
+            CivilCode.ResultList
+          ]
+        ]
       ]
     ]
   end
