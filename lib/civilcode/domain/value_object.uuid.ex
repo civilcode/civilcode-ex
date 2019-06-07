@@ -17,6 +17,13 @@ defmodule CivilCode.ValueObject.Uuid do
         end
       end
 
+      # Encoding for JSON. Required when a ValueObject is serialized.
+      defimpl Jason.Encoder do
+        def encode(value_object, opts) do
+          Jason.Encode.string(value_object.value, opts)
+        end
+      end
+
       @spec new(String.t()) :: {:ok, t} | {:error, String.t()}
       def new(value) when is_nil(value), do: Result.error("is invalid")
       def new(value) when not is_binary(value), do: Result.error("is invalid")

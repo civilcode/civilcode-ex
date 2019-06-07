@@ -11,6 +11,13 @@ defmodule CivilCode.ValueObject.NonNegInteger do
         field(:value, non_neg_integer)
       end
 
+      # Encoding for JSON. Required when a ValueObject is serialized.
+      defimpl Jason.Encoder do
+        def encode(value_object, _opts) do
+          Jason.Encode.integer(value_object.value)
+        end
+      end
+
       @spec new(String.t() | non_neg_integer) :: {:ok, t} | {:error, atom}
       def new(value) when is_binary(value) do
         case Ecto.Type.cast(:integer, value) do

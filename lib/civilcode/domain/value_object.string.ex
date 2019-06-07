@@ -7,6 +7,13 @@ defmodule CivilCode.ValueObject.String do
 
       alias CivilCode.Result
 
+      # Encoding for JSON. Required when a ValueObject is serialized.
+      defimpl Jason.Encoder do
+        def encode(value_object, opts) do
+          Jason.Encode.string(value_object.value, opts)
+        end
+      end
+
       typedstruct enforce: true do
         field(:value, String.t())
       end
