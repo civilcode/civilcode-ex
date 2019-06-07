@@ -85,8 +85,12 @@ defmodule CivilCode.Repository do
 
       def transaction(fun, opts \\ []) do
         case unquote(repo).transaction(fun, opts) do
-          # Unwrap the embedded result
+          # Unwrap the embedded result, there are three possibilities:
+          # 1. The transaction and the inner function resulted in success
           {:ok, {:ok, payload}} -> {:ok, payload}
+          # 2. The transaction was successful, but the inner function resulted in an error
+          {:ok, {:error, payload}} -> {:error, payload}
+          # 3. The transaction ended in an error and so did the inner function
           {:error, {:error, payload}} -> {:error, payload}
         end
       end
