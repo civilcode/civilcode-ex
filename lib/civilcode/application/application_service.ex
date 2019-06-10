@@ -73,7 +73,7 @@ defmodule CivilCode.ApplicationService do
   defmacro __using__(_) do
     quote do
       alias Ecto.Changeset
-      alias CivilCode.{RepositoryError, Result}
+      alias CivilCode.{EntityId, RepositoryError, Result}
     end
   end
 end
