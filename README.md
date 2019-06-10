@@ -3,6 +3,8 @@
 The foundation library contains the building blocks for Domain-Driven Design applications
 and some basic types such as `CivilCode.Maybe` and `CivilCode.Result`.
 
+The generated documentation can be viewed at: http://civilcode-ex.s3-website-us-east-1.amazonaws.com/
+
 ## About CivilCode Inc
 
 [CivilCode Inc.](https://www.civilcode.io) develops tailored business applications in
