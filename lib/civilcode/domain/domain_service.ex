@@ -2,6 +2,20 @@ defmodule CivilCode.DomainService do
   @moduledoc """
   A service in the domain performs a domain-specific task.
 
+  # Usage
+
+  Domain services receive Entities as parameters, generally do not raise exceptions (i.e. returns
+  a Result type and may have side effects.
+
+  # Design Constraints
+
+  * Do not confuse a DomainService with `CivilCode.ApplicationService`.
+  * DomainServices are part of the domain therefore the name of the service should include the
+    Ubiquitous Language.
+  * Avoid an Anemic Domain Model by placing all business logic in Domain Services.
+  * DomainServices are called from the `CivilCode.ApplicationService` and receive aggregates
+    as parameters.
+
   ## From the Experts
 
   > Sometimes, it just isn’t a thing. . . . When a significant process or transformation in the
@@ -20,20 +34,6 @@ defmodule CivilCode.DomainService do
   * Policy: determining if a group of aggregates comply with a business policy
   * Processor: running business logic across multiple aggregates, e.g. `OrderProcessor`
   * Calculation: making a calculation across a number of entities
-
-  # Usage
-
-  Domain services receive Entities as parameters, generally do not raise exceptions (i.e. returns
-  a Result type and may have side effects.
-
-  # Design Constraints
-
-  * Do not confuse a DomainService with `CivilCode.ApplicationService`.
-  * DomainServices are part of the domain therefore the name of the service should include the
-    Ubiquitous Language.
-  * Avoid an Anemic Domain Model by placing all business logic in Domain Services.
-  * DomainServices are called from the `CivilCode.ApplicationService` and receive aggregates
-    as parameters.
   """
 
   defmacro __using__(_) do

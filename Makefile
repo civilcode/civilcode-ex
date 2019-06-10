@@ -1,4 +1,5 @@
-docs.generate:
+docs.build:
+	mix docs
 	aws s3 cp ./doc/ s3://civilcode-ex/ --recursive --acl public-read
 
 docs.open:

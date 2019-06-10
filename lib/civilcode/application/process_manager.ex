@@ -2,6 +2,10 @@ defmodule CivilCode.ProcessManager do
   @moduledoc """
   A Process Manager integrates with multiple bounded contexts to perform a larger task.
 
+  ## Usage
+
+  Currently ProcessManagers are not used in our applications.
+
   ## From the Experts
 
   > Sometimes business processes span multiple bounded contexts. For these cases, you employ the
@@ -15,10 +19,6 @@ defmodule CivilCode.ProcessManager do
   depending on requirements.
 
   -- [Domain Driven Design, Event Sourcing and Micro-Services explained for developers](http://www.dinuzzo.co.uk/2017/04/28/domain-driven-design-event-sourcing-and-micro-services-explained-for-developers/)
-
-  ## Usage
-
-  Currently ProcessManagers are not used in our applications.
   """
 
   defmacro __using__(_) do

@@ -2,6 +2,29 @@ defmodule CivilCode.AggregateRoot do
   @moduledoc """
   An Entity that is the root of the Aggregate.
 
+  ## Usage
+
+  Aggregates are only used in a __Rich-Domains__. The root of the
+  Aggreate is identified by:
+
+      use CivilCode.AggregateRoot
+
+  This provides no additional functionality than:
+
+      use CivilCode.Entity
+
+  ## Design Constraints
+
+  Rich-Domain:
+
+  * Consider using a __different aggregate for a different transaction boundary__, i.e. identify the
+    role, state or concern of an aggregate. For example, an `Order` has multiple states that
+    alter it's transaction boundaries, e.g. `PendingOrder`, `PaidOrder`, `ShippedOrder`.
+  * Aggregates only refer to other aggregates by ID. This communicates what Entities are included
+    in the aggregate.
+  * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
+  * Aggregates are deleted together in a `CASCADING DELETE`.
+
   ## From the Experts
 
   Vaughn Vernon describes aggregates best in his book [Domain-Driven Design Distilled](https://books.google.ca/books?id=k9zIDAAAQBAJ&printsec=frontcover&dq=Domain-Driven+Design+Distilled&hl=en&sa=X&redir_esc=y#v=onepage&q=Domain-Driven%20Design%20Distilled&f=false)
@@ -47,29 +70,6 @@ defmodule CivilCode.AggregateRoot do
   relationship with `line-items`, where an `order` will only have a few `line-items`.
 
   Another approach in designing an aggregate is to conisder how it would be Event-Sourced.
-
-  ## Usage
-
-  Aggregates are only used in a __Rich-Domains__. The root of the
-  Aggreate is identified by:
-
-      use CivilCode.AggregateRoot
-
-  This provide no additional functionality than:
-
-      use CivilCode.Entity
-
-  ## Design Constraints
-
-  Rich-Domain:
-
-  * Consider using a __different aggregate for a different transaction boundary__, i.e. identify the
-    role, state or concern of an aggregate. For example, an `Order` has multiple states that
-    alter it's transaction boundaries, e.g. `PendingOrder`, `PaidOrder`, `ShippedOrder`.
-  * Aggregates only refer to other aggregates by ID. This communicates what Entities are included
-    in the aggregate.
-  * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
-  * Aggregates are deleted together in a `CASCADING DELETE`.
   """
 
   defmacro __using__(_) do

@@ -2,10 +2,6 @@ defmodule CivilCode.DomainEvent do
   @moduledoc """
   A Domain Event captures an important occurrence in the domain.
 
-  ## From the Experts
-
-  > A Domain Event is a record of some business-significant occurrence in a Bounded Context. [DDDDistilled p. 99]
-
   ## Usage
 
   In a __Rich-Domain__ other Bounded Contexts subscribe to Domain Events.
@@ -42,6 +38,10 @@ defmodule CivilCode.DomainEvent do
             {:error, OutOfStock.new(entity: stock_item)}
         end
       end
+
+  ## From the Experts
+
+  > A Domain Event is a record of some business-significant occurrence in a Bounded Context. [DDDDistilled p. 99]
   """
 
   defmacro __using__(_) do

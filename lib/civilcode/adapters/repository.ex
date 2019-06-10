@@ -2,14 +2,6 @@ defmodule CivilCode.Repository do
   @moduledoc """
   A Repository hydrates and persists an Aggregate.
 
-  ## From the Experts
-
-  > This basic set of principles applies to a DDD Repository. Placing an Aggregate (10) instance in
-  > its corresponding Repository, and later using that Repository to retrieve the same instance,
-  > yields the expected whole object. If you alter a preexisting Aggregate instance that you
-  > retrieve from the Repository, its changes will be persisted. If you remove the instance from
-  > the Repository, you will be unable to retrieve it from that point forward. [IDDD, p. 401]
-
   ## Usage
 
   CivilCode implements persistence-oriented, save-based Repository (12). This is because Ecto
@@ -40,6 +32,14 @@ defmodule CivilCode.Repository do
   Entity domain actions return `Ecto.Changeset.t()` in a Rich-Domain Architecture they are not returned
   to the client as the data is already validated, therefore an explicit `CivilCode.RepositoryError.t()` must
   be returned.
+
+  ## From the Experts
+
+  > This basic set of principles applies to a DDD Repository. Placing an Aggregate (10) instance in
+  > its corresponding Repository, and later using that Repository to retrieve the same instance,
+  > yields the expected whole object. If you alter a preexisting Aggregate instance that you
+  > retrieve from the Repository, its changes will be persisted. If you remove the instance from
+  > the Repository, you will be unable to retrieve it from that point forward. [IDDD, p. 401]
   """
 
   alias CivilCode.{Aggregate, Entity, EntityId, Result}

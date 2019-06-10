@@ -2,17 +2,6 @@ defmodule CivilCode.Entity do
   @moduledoc """
   A concept in the domain that performs actions on a uniquely identified object.
 
-  ## From the Experts
-
-  > We design a domain concept as an Entity when we care about its individuality, when
-  > distinguishing it from all other objects in a system is a mandatory constraint. An Entity is
-  > a unique thing and is capable of being changed continuously over a long period of time.
-  > Changes may be so extensive that the object might seem much different from what it once was.
-  > Yet, it is the same object by identity.
-
-  > These redesigned methods have a CQS query contract and act as Factories (11); that is, each
-    creates a new Aggregate instance and returns a reference to it." - [IDDD]
-
   ## Usage
 
   Entities form Aggregates, one Entity in the Aggregate will act as the Aggregate Root
@@ -82,6 +71,17 @@ defmodule CivilCode.Entity do
     the validation of values.
   * For Life cycle or operational states the current state is determined via a predicate:
 
+
+  ## From the Experts
+
+  > We design a domain concept as an Entity when we care about its individuality, when
+  > distinguishing it from all other objects in a system is a mandatory constraint. An Entity is
+  > a unique thing and is capable of being changed continuously over a long period of time.
+  > Changes may be so extensive that the object might seem much different from what it once was.
+  > Yet, it is the same object by identity.
+
+  > These redesigned methods have a CQS query contract and act as Factories (11); that is, each
+    creates a new Aggregate instance and returns a reference to it." - [IDDD]
   ```
       # good
 

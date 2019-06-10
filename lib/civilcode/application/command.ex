@@ -3,24 +3,6 @@ defmodule CivilCode.Command do
   A command reifies a business request. A command is passed to an ApplicationService providing
   params as Value Objects to the domain.
 
-  ## From the Experts
-
-  > Since the Command objects can be serialized, we can send the textual or binary representations
-  > as messages over a message queue. [IDDD p. 550]
-
-  ## Command: Application or Domain Concern?
-
-  > controlling task management for applications [IDDD p. 549]
-
-  Based on the text from Vernon, a Command is considered an application concern. We acknowleged
-  that others have different opinions:
-
-  > Commands belong to the core domain (just like domain events). They play an important role in the
-    CQRS architecture – they explicitly represent what the clients can do with the application. Just
-    like events represent what the outcome of those actions could be.
-
-  [Are CQRS commands part of the domain model?](https://enterprisecraftsmanship.com/2019/01/31/cqrs-commands-part-domain-model/)
-
   ## Usage
 
   A __Rich-Domain__ Architecture MUST use Commands as Entities in these architectures
@@ -62,6 +44,24 @@ defmodule CivilCode.Command do
   * `Ecto.Changeset.validate_required/2` is the only validation function allowed in Entities, other
     funtions such as `Ecto.Changeset.validate_format/3` are not allowed as ValueObjects handle
     the validation of values.
+
+  ## From the Experts
+
+  > Since the Command objects can be serialized, we can send the textual or binary representations
+  > as messages over a message queue. [IDDD p. 550]
+
+  ## Command: Application or Domain Concern?
+
+  > controlling task management for applications [IDDD p. 549]
+
+  Based on the text from Vernon, a Command is considered an application concern. We acknowleged
+  that others have different opinions:
+
+  > Commands belong to the core domain (just like domain events). They play an important role in the
+    CQRS architecture – they explicitly represent what the clients can do with the application. Just
+    like events represent what the outcome of those actions could be.
+
+  [Are CQRS commands part of the domain model?](https://enterprisecraftsmanship.com/2019/01/31/cqrs-commands-part-domain-model/)
   """
 
   defmacro __using__(_args) do
