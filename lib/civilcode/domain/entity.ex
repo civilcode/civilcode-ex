@@ -16,7 +16,7 @@ defmodule CivilCode.Entity do
   ## Usage
 
   Entities form Aggregates, one Entity in the Aggregate will act as the Aggregate Root
-  (`CivilCode.Aggregate.Root`), all function calls are made through the Aggregate, creating a
+  (`CivilCode.AggregateRoot`), all function calls are made through the Aggregate, creating a
   public API.
 
   Entities have domain actions that operate on the Entity, or return new Aggregates of a different

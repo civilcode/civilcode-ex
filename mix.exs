@@ -33,7 +33,7 @@ defmodule CivilCode.MixProject do
             CivilCode.Record
           ],
           "Domain Model": [
-            CivilCode.Aggregate.Root,
+            CivilCode.AggregateRoot,
             CivilCode.BusinessRuleViolation,
             CivilCode.Entity,
             CivilCode.EntityId,

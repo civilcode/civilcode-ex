@@ -298,6 +298,6 @@ documentation in how to use them in more details that exceeds the scope of this 
 * `CivilCode.ValueObject` (6)
 * `CivilCode.DomainService` (7)
 * `CivilCode.DomainEvent` (8)
-* `CivilCode.Aggregate.Root` (10)
+* `CivilCode.AggregateRoot` (10)
 *  Factory (11)
 * `CivilCode.Repository` (12)
