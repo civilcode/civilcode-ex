@@ -74,7 +74,7 @@ defmodule CivilCode.Command do
       import CivilCode.Command
 
       alias Ecto.Changeset
-      alias CivilCode.{Params, Result}
+      alias CivilCode.{EntityId, Params, Result}
 
       @primary_key false
     end
