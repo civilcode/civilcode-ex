@@ -16,9 +16,17 @@ defmodule CivilCode.ValueObject.Base do
       defoverridable new: 1
 
       def new!(value) do
-        {:ok, primitive} = new(value)
+        {:ok, value_object} = new(value)
 
-        primitive
+        value_object
+      end
+
+      defimpl Inspect do
+        import Inspect.Algebra
+
+        def inspect(value_object, opts) do
+          concat([to_doc(@for, opts), "<", to_doc(value_object.value, opts), ">"])
+        end
       end
     end
   end
