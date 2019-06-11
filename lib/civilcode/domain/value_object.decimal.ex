@@ -1,4 +1,4 @@
-defmodule CivlCode.ValueObject.Decimal do
+defmodule CivilCode.ValueObject.Decimal do
   @moduledoc """
   A value object based on a decimal.
   """
