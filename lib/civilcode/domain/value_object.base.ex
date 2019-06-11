@@ -25,7 +25,7 @@ defmodule CivilCode.ValueObject.Base do
         import Inspect.Algebra
 
         def inspect(value_object, opts) do
-          concat([to_doc(@for, opts), "<", to_doc(value_object.value, opts), ">"])
+          concat(["#", to_doc(@for, opts), "<", to_doc(value_object.value, opts), ">"])
         end
       end
     end
