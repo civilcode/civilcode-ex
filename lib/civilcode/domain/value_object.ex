@@ -62,6 +62,18 @@ defmodule CivilCode.ValueObject do
     end
   end
 
+  def date(_) do
+    quote do
+      use CivilCode.ValueObject.Date
+    end
+  end
+
+  def decimal(_) do
+    quote do
+      use CivilCode.ValueObject.Decimal
+    end
+  end
+
   def string(_) do
     quote do
       use CivilCode.ValueObject.String
