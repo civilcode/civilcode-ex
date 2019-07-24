@@ -66,7 +66,7 @@ defmodule CivilCode.MixProject do
 
       # Runtime
       {:currying, "~> 1.0.3"},
-      {:ecto, "~> 3.0.8"},
+      {:ecto, ">= 3.0.0"},
       {:jason, "~> 1.0"},
       {:typed_struct, "~> 0.1.1", runtime: false},
       {:elixir_uuid, "~> 1.2.0"}
