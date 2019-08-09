@@ -27,7 +27,7 @@ defmodule CivilCode.ValueObject.NonNegInteger do
       end
 
       def new(value) when value < 0 do
-        Result.error("must be negative")
+        Result.error("must not be negative")
       end
 
       def new(value) do

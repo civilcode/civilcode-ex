@@ -37,6 +37,9 @@ defmodule CivilCode.ValueObject do
         use CivilCode.ValueObject, type: :enum, values: [:pending, :paid, :shipped]
       end
 
+  Value object functions can only receive other value object i.e. not an Entity. This helps
+  to keep the value objects independent of Entities and reduces coupling.
+
   ## From the Experts
 
   > When you have a true Value Object in your model, whether you realize it or not, it is not a

@@ -138,7 +138,7 @@ defmodule CivilCode.Entity do
       import CivilCode.Entity
       import Ecto.Changeset
 
-      alias CivilCode.{Params, Result}
+      alias CivilCode.{EntityId, Params, Result}
       alias Ecto.Changeset
 
       def new(attrs \\ []) do

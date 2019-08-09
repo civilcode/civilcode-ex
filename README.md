@@ -71,6 +71,7 @@ Beyond key concepts of DDD other related influences are:
 * Hexagonal or Ports and Adapters [IDDD pg125]
 * Algebraic Data Types (ADT); read [Design with Types](https://fsharpforfunandprofit.com/posts/designing-with-types-intro/#series-toc)
 * Event Storming; watch [Event Storming for Fun and Profit](https://www.youtube.com/watch?v=OcIu-dvrXhY)
+* [Command Query Responsibility Segregation (CQRS)](https://enterprisecraftsmanship.com/2015/04/20/types-of-cqrs/)
 
 Other references include:
 
@@ -99,8 +100,9 @@ applications may exhibit a different style of DDD.
 
 We have two application styles:
 
-1. **Simple-Domain Architecture**: suitable for CRUD style applications. We should always consider this
-   style first.
+1. **Simple-Domain Architecture**: suitable for CRUD style applications. *We should always consider
+   this style first.* The style can be beyond the CRUD, however once the pain of this approach
+   if experienced, then the application must evolve into a Rich-Domain architecture.
 2. **Rich-Domain Architecture**: implement concepts from our Event Storming such as commands,
   aggregates, and events with weak (implicit) or strong types (explicit). This is our sweet-spot
   for the type of business applications we develop.

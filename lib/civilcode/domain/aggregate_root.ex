@@ -5,7 +5,7 @@ defmodule CivilCode.AggregateRoot do
   ## Usage
 
   Aggregates are only used in a __Rich-Domains__. The root of the
-  Aggreate is identified by:
+  Aggregate is identified by:
 
       use CivilCode.AggregateRoot
 
@@ -24,6 +24,11 @@ defmodule CivilCode.AggregateRoot do
     in the aggregate.
   * Aggregates comply with [ACID](https://en.wikipedia.org/wiki/ACID_(computer_science)).
   * Aggregates are deleted together in a `CASCADING DELETE`.
+
+  Aggregates always create new aggregates or entities. You can only create new aggregate from
+  another aggregate, e.g. You maybe consider `Product.create(id, name, description)` if it as at
+  to top of the object graph for that context, but even in this instance, consider a singleton,
+  e.g. `Catalog.add_product(id, name, description)`.
 
   ## From the Experts
 
@@ -61,6 +66,18 @@ defmodule CivilCode.AggregateRoot do
   [Effective Aggregate Design - Part I: Modeling a Single Aggregate](http://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf)
   [Effective Aggregate Design - Part II: Making Aggregates Work Together](http://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf)
 
+  [Microsofts architecture guide](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-model-layer-validations)
+  explains the concept of protecting business invariants:
+
+  > The main responsibility of an aggregate is to enforce invariants across state changes for all
+  > the entities within that aggregate. Domain entities should always be valid entities.
+  > There are a certain number of invariants for an object that should always be true.
+  > For example, an order item object always has to have a quantity that must be a positive integer,
+  > plus an article name and price. Therefore, invariants enforcement is the responsibility of the
+  > domain entities (especially of the aggregate root) and an entity object should not be able to
+  > exist without being valid. Invariant rules are simply expressed as contracts, and exceptions
+  > or notifications are raised when they are violated.
+
   Finally, Vladimir Khorikov's on [Domain-Driven in Practice](https://app.pluralsight.com/player?course=domain-driven-design-in-practice&author=vladimir-khorikov&name=domain-driven-design-in-practice-m1&clip=0)
   has a good clip on [How to Find Boundaries for Aggregates](https://app.pluralsight.com/player?course=domain-driven-design-in-practice&author=vladimir-khorikov&name=domain-driven-design-in-practice-m4&clip=4) in
   in the section titled [Extending the Bounded Context with Aggregates](https://app.pluralsight.com/player?course=domain-driven-design-in-practice&author=vladimir-khorikov&name=domain-driven-design-in-practice-m4&clip=0).
@@ -69,7 +86,7 @@ defmodule CivilCode.AggregateRoot do
   having hundreds of `comment`s. However, an `order` is more like a "one to some" than a "one to many"
   relationship with `line-items`, where an `order` will only have a few `line-items`.
 
-  Another approach in designing an aggregate is to conisder how it would be Event-Sourced.
+  Another approach in designing an aggregate is to consider how it would be Event-Sourced.
   """
 
   defmacro __using__(_) do
