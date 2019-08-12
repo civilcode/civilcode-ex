@@ -8,6 +8,7 @@ defmodule CivilCode.Maybe do
   @type t(value) :: {:some, value} | :none
   @type a :: any
   @type b :: any
+  @type c :: any
 
   @spec none() :: :none
   def none, do: :none
@@ -40,4 +41,21 @@ defmodule CivilCode.Maybe do
   def flatten({:some, {:some, value}}), do: flatten({:some, value})
   def flatten({:some, :none}), do: :none
   def flatten({:some, value}), do: {:some, value}
+
+  @spec combine(t(a), t(b)) :: t(c)
+  def combine({:some, lhs}, {:some, rhs}) do
+    {:some, List.flatten([lhs, rhs])}
+  end
+
+  def combine({:some, lhs}, :none) do
+    {:some, List.flatten([lhs])}
+  end
+
+  def combine(:none, {:some, rhs}) do
+    {:some, List.flatten([rhs])}
+  end
+
+  def combine(:none, :none) do
+    :none
+  end
 end

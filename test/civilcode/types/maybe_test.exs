@@ -68,4 +68,19 @@ defmodule CivilCode.MaybeTest do
       assert :none == Maybe.flatten({:some, :none})
     end
   end
+
+  describe "combine" do
+    test "some types" do
+      assert {:some, [:foo, :bar]} == Maybe.combine({:some, :foo}, {:some, :bar})
+    end
+
+    test "some and none" do
+      assert {:some, [:foo]} == Maybe.combine({:some, :foo}, :none)
+      assert {:some, [:foo]} == Maybe.combine(:none, {:some, :foo})
+    end
+
+    test "none" do
+      assert :none == Maybe.combine(:none, :none)
+    end
+  end
 end
