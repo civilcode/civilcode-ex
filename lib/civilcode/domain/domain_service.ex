@@ -37,5 +37,8 @@ defmodule CivilCode.DomainService do
   """
 
   defmacro __using__(_) do
+    quote do
+      alias CivilCode.{EntityId, Result}
+    end
   end
 end

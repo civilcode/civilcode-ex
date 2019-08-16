@@ -52,7 +52,7 @@ defmodule CivilCode.Repository do
     @typedoc """
     The struct representating a specific entity id, e.g. `ProductId.t/0`
     """
-    @type id :: %{__struct__: atom, value: EntityId.t()}
+    @type id :: %{__struct__: atom, value: EntityId.t()} | EntityId.t()
 
     @doc """
     Generates an ID for an entity.
@@ -69,6 +69,8 @@ defmodule CivilCode.Repository do
     """
     @callback save(Entity.t() | Ecto.Changeset.t()) ::
                 {:ok, Aggregate.t()} | {:error, RepositoryError.t()}
+
+    @optional_callbacks next_id: 0, get: 1, save: 1
   end
 
   defmacro __using__(opts) do
@@ -77,7 +79,7 @@ defmodule CivilCode.Repository do
     quote do
       @behaviour Behaviour
 
-      alias CivilCode.{Entity, RepositoryError, Result}
+      alias CivilCode.{Entity, EntityId, RepositoryError, Result}
 
       alias unquote(repo)
 
