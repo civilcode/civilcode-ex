@@ -102,7 +102,7 @@ We have two application styles:
 
 1. **Simple-Domain Architecture**: suitable for CRUD style applications. *We should always consider
    this style first.* The style can be beyond the CRUD, however once the pain of this approach
-   if experienced, then the application must evolve into a Rich-Domain architecture.
+   is experienced, then the application must evolve into a Rich-Domain architecture.
 2. **Rich-Domain Architecture**: implement concepts from our Event Storming such as commands,
   aggregates, and events with weak (implicit) or strong types (explicit). This is our sweet-spot
   for the type of business applications we develop.
@@ -266,8 +266,8 @@ defmodule MagasinCore.Sales.Order do
 
   @type t :: MagasinData.Sales.Order.t
 
-  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
-  @spec cancel(t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, t} | {:error, BusinessException.t}
+  @spec cancel(t) :: {:ok, t} | {:error, BusinessException.t}
 end
 ```
 
@@ -278,14 +278,14 @@ Alternatively, if a custom schema is required:
 defmodule MagasinCore.Sales.Order do
   use CivilCode.Entity
 
-  embedded_schema do
-    field :email, Email
-    field :product_id, CivilCode.EntityId
-    field :quantity, Quantity
+  schema do
+    field :email, Email.t()
+    field :product_id, CivilCode.EntityId.t()
+    field :quantity, Quantity.t()
   end
 
-  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
-  @spec cancel(t) :: {:ok, Changeset.t(t)} | {:error, BusinessException.t}
+  @spec place(t, Email.t, Product.t, Quantity.t) :: {:ok, t} | {:error, BusinessException.t}
+  @spec cancel(t) :: {:ok, t} | {:error, BusinessException.t}
 end
 ```
 

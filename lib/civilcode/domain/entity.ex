@@ -18,7 +18,7 @@ defmodule CivilCode.Entity do
   Entities can working on state from the Data application, known as a `CivilCode.Record`, or can create
   their own struct which is loaded from the Aggregate Repository.
 
-  Domain Actions will always return a valid `Ecto.Changeset.t()` unless a business rule has been violated
+  Domain Actions will always return a valid entity unless a business rule has been violated
   then a `CivilCode.BusinessException.t()` result will be returned.
 
   ## Examples
@@ -38,8 +38,7 @@ defmodule CivilCode.Entity do
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
-             changeset = change(stock_item, count_on_hand: new_cound_on_hand)
-             {:ok, changeset}
+             {:ok, %{stock_item | count_on_hand: new_count_on_hand}}
 
           {:error, _} ->
             {:error, OutOfStock.new(entity: stock_item)}
@@ -48,29 +47,31 @@ defmodule CivilCode.Entity do
 
       # Rich-Domain with DomainEvent
 
-      @spec deplenish(t, Quantity.t) :: {:ok, Changeset.t(t)}, {:error, OutOfStock.t}
+      @spec deplenish(t, Quantity.t()) :: Result.ok(Ecto.Changeset.t(t)) | Result.error(OutOfStock.t())
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
-             # NOTE: The event will be published by the Repository when the Changeset is persisted
-             StockItemAdjusted.new(stock_item_id: stock_item.id, new_count_on_hand: new_count_on_hand)}
-             changeset = change(stock_item, event, count_on_hand: new_cound_on_hand)
-             {:ok, changeset}
+            stock_item_adjusted =
+              StockItemAdjusted.new(stock_item_id: stock_item.id, new_count_on_hand: new_count_on_hand)
+
+            stock_item
+            |> apply_event(stock_item_adjusted)
+            |> Result.ok()
 
           {:error, _} ->
-            {:error, OutOfStock.new(entity: stock_item)}
+            OutOfStock.new(entity: stock_item) |> Result.error()
         end
+      end
+
+      defp apply_event(state, %StockItemAdjusted{} = event) do
+        state
+        |> Map.put(:count_on_hand, event.new_count_on_hand)
+        |> put_event(event)
       end
 
   ## Design Constraints
 
-  For all architecture styles:
-
-  * `Ecto.Changeset.validate_required/2` is the only validation function allowed in Entities, other
-    funtions such as `Ecto.Changeset.validate_format/3` are not allowed as ValueObjects handle
-    the validation of values.
-  * For Life cycle or operational states the current state is determined via a predicate:
-
+  * For Life cycle or operational states the current state is determined via a predicate.
 
   ## From the Experts
 
@@ -120,7 +121,7 @@ defmodule CivilCode.Entity do
 
   Rich-Domain:
 
-  * Ecto Schema is used to implement Entity schemas when needed.
+  * `schema` function is used to implement Entity schemas when needed (currently back by TypedStruct)
   """
 
   defmodule Metadata do
@@ -147,15 +148,11 @@ defmodule CivilCode.Entity do
     end
   end
 
-  defmacro embedded_schema(do: block) do
+  defmacro schema(do: block) do
     quote do
-      use Ecto.Schema
+      use TypedStruct
 
-      @type t :: %__MODULE__{}
-
-      @primary_key false
-
-      Ecto.Schema.embedded_schema do
+      TypedStruct.typedstruct enforce_keys: true do
         unquote(block)
         field(:__civilcode__, :map, default: %Metadata{})
       end
@@ -165,14 +162,9 @@ defmodule CivilCode.Entity do
   @doc """
   Put changes for the entity and the event.
   """
-  @spec change(t | Ecto.Changeset.t(), event :: map, fields :: map | Keyword.t()) ::
-          Ecto.Changeset.t()
-  def change(entity, event, fields) do
+  def put_event(entity, event) do
     existing_events = get_metadata(entity, :events)
-
-    entity
-    |> put_metadata(:events, existing_events ++ [event])
-    |> Ecto.Changeset.change(fields)
+    put_metadata(entity, :events, existing_events ++ [event])
   end
 
   # REPOSITORY RELATED FUNCTIONS
