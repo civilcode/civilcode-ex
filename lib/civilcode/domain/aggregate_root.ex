@@ -94,7 +94,7 @@ defmodule CivilCode.AggregateRoot do
       use CivilCode.Entity
 
       alias Ecto.Changeset
-      alias CivilCode.Result
+      alias CivilCode.{Maybe, MaybeList, Result, ResultList}
     end
   end
 end
