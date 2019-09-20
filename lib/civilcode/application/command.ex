@@ -27,7 +27,7 @@ defmodule CivilCode.Command do
           embeds_one :shipping_address, Address
         end
 
-        @spec new(Params.t()) :: Result.ok(t) | Result.error(Changeset.t(t))
+        @spec new(Params.t()) :: Result.t(t, Changeset.t(t))
         def new(params) do
           __MODULE__
           |> struct

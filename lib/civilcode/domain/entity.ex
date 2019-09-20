@@ -34,7 +34,7 @@ defmodule CivilCode.Entity do
 
       # Rich-Domain
 
-      @spec deplenish(t, Quantity.t) :: {:ok, Changeset.t(t)}, {:error, OutOfStock.t}
+      @spec deplenish(t, Quantity.t) :: Result.t(Changeset.t(t), OutOfStock.t)
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
@@ -47,7 +47,7 @@ defmodule CivilCode.Entity do
 
       # Rich-Domain with DomainEvent
 
-      @spec deplenish(t, Quantity.t()) :: Result.ok(Ecto.Changeset.t(t)) | Result.error(OutOfStock.t())
+      @spec deplenish(t, Quantity.t()) :: Result.t(Ecto.Changeset.t(t), OutOfStock.t())
       def deplenish(stock_item, quantity) do
         case Quantity.subtract(stock_item.count_on_hand, quantity) do
           {:ok, new_count_on_hand} ->
@@ -175,7 +175,7 @@ defmodule CivilCode.Entity do
   Builds an entity from another struct. This is used in a Repository to build an entity
   from a database record.
   """
-  @spec build(module, {:ok, struct}) :: t
+  @spec build(module, Result.ok(struct)) :: t
   def build(module, {:ok, state}), do: build(module, state)
 
   @spec build(module, struct) :: t

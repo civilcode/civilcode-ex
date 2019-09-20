@@ -33,7 +33,7 @@ defmodule CivilCode.RepositoryError do
     field(:message, String.t())
   end
 
-  @spec validate(Ecto.Changeset.t()) :: {:error, t}
+  @spec validate(Ecto.Changeset.t()) :: Result.error(t)
   def validate(changeset) do
     changeset
     |> new

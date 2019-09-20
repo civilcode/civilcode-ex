@@ -28,9 +28,9 @@ defmodule CivilCode.ApplicationService do
         use CivilCode.ApplicationService
 
         @spec new_product() :: Changeset.t(Product.t)
-        @spec create_product(Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t)}
+        @spec create_product(Params.t) :: Result.t(Product.t, Changeset.t(Product.t))
         @spec edit_product(EntityId.t) :: Changeset.t(Product.t)
-        @spec update_product(EntityId.t, Params.t) :: {:ok, Product.t} | {:error, Changeset.t(Product.t)}
+        @spec update_product(EntityId.t, Params.t) :: Result.t(Product.t, Changeset.t(Product.t))
       end
 
   An ApplicationService may raise exceptions with repository actions, since these are used by
@@ -50,9 +50,9 @@ defmodule CivilCode.ApplicationService do
         use CivilCode.ApplicationService
 
         @spec handle(PlaceOrder.t) ::
-          {:ok, order_id :: EntityId.t} | {:error, BusinessException.t |  RepositoryError.t}
+          Result.t(order_id :: EntityId.t, BusinessException.t |  RepositoryError.t)
         @spec handle(CompleteOrder.t) ::
-          {:ok, order_id :: EntityId.t} | {:error, BusinessException.t | RepositoryError.t}
+          Result.t(order_id :: EntityId.t, BusinessException.t | RepositoryError.t)
       end
 
   Rich-Domain will access the aggregate via a Repository that does not raise exceptions, it only
