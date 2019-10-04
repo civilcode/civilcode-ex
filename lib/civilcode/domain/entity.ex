@@ -144,7 +144,7 @@ defmodule CivilCode.Entity do
 
       alias Ecto.Changeset
 
-      def new(attrs \\ []) do
+      def new(attrs) do
         struct!(__MODULE__, attrs)
       end
 
