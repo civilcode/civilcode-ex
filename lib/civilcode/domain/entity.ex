@@ -147,6 +147,8 @@ defmodule CivilCode.Entity do
       def new(attrs \\ []) do
         struct!(__MODULE__, attrs)
       end
+
+      defoverridable new: 1
     end
   end
 
