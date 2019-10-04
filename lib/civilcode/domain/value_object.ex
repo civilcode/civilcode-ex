@@ -77,6 +77,18 @@ defmodule CivilCode.ValueObject do
     end
   end
 
+  def integer(_) do
+    quote do
+      use CivilCode.ValueObject.Integer
+    end
+  end
+
+  def naive_money(_) do
+    quote do
+      use CivilCode.ValueObject.NaiveMoney
+    end
+  end
+
   def string(_) do
     quote do
       use CivilCode.ValueObject.String
