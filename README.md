@@ -84,6 +84,12 @@ Other references include:
 * Optimize for Deletability; watch [Optimize for Deletability](https://vimeo.com/108441214)
 * Making illegal states unrepresentable; read [Designing with types: Making illegal states unrepresentable](https://fsharpforfunandprofit.com/posts/designing-with-types-making-illegal-states-unrepresentable/)
 
+## Command Query Separation (CQS)
+
+A method is either a "Command" that performs an action OR a "Query" that returns data to the caller,
+but never both. In simpler terms, "asking a question shouldn't change the answer". Is this changing
+something, or just fetching something?
+
 ## DDD Architecture Styles
 
 DDD provides us with a set of tools to develop an application. We may apply some but not all
