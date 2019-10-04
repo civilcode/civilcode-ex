@@ -22,7 +22,7 @@ defmodule CivilCode.ValueObject.Enum do
       Enum.all?(values, &is_atom/1) || raise "All values must be atoms"
       schema && (is_atom(schema) || raise "Option schema must be atom")
 
-      @behaviour Ecto.Type
+      use Ecto.Type
       @__input_values__ Enum.map(values, &Atom.to_string/1)
       @__output_values__ values
       @__schema__ schema

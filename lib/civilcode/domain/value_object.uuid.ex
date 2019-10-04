@@ -34,7 +34,7 @@ defmodule CivilCode.ValueObject.Uuid do
         |> Result.ok()
       end
 
-      @behaviour Elixir.Ecto.Type
+      use Elixir.Ecto.Type
 
       @impl true
       def type, do: :uuid

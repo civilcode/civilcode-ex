@@ -40,7 +40,7 @@ defmodule CivilCode.ValueObject.Date do
 
       defoverridable new: 1
 
-      @behaviour Elixir.Ecto.Type
+      use Elixir.Ecto.Type
 
       @impl true
       def type, do: :date
