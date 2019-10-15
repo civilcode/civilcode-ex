@@ -10,7 +10,7 @@ defmodule CivilCode.ValueObject.Date do
       alias CivilCode.Result
 
       typedstruct enforce: true do
-        field(:value, String.t())
+        field(:value, Date.t())
       end
 
       def new(value) when is_binary(value) do
