@@ -4,3 +4,6 @@ docs.build:
 
 docs.open:
 	open http://civilcode-ex.s3-website-us-east-1.amazonaws.com
+
+code.format:
+	watchman -- trigger ./ format '**/*.ex' '**/*.exs' '**/*.default' -- mix format

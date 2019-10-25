@@ -1,4 +1,4 @@
-defmodule CivilCode.MaybListTest do
+defmodule CivilCode.MaybeListTest do
   use ExUnit.Case
 
   alias CivilCode.MaybeList

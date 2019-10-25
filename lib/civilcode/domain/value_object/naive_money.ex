@@ -6,7 +6,7 @@ defmodule CivilCode.ValueObject.NaiveMoney do
 
   defmacro __using__(_) do
     quote do
-      use CivilCode.ValueObject.Base
+      use CivilCode.ValueObject.Base, inspect: false
 
       alias CivilCode.Result
 
@@ -38,6 +38,14 @@ defmodule CivilCode.ValueObject.NaiveMoney do
 
       def to_string(value_object) do
         "$" <> Decimal.to_string(value_object.value)
+      end
+
+      defimpl Inspect do
+        import Inspect.Algebra
+
+        def inspect(value_object, opts) do
+          concat(["#", to_doc(@for, opts), "<", to_string(value_object), ">"])
+        end
       end
 
       defoverridable new: 1, to_string: 1

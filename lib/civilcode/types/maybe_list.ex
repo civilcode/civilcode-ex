@@ -17,6 +17,8 @@ defmodule CivilCode.MaybeList do
     |> preserve_original_order
   end
 
+  defp preserve_original_order(:none), do: :none
+
   defp preserve_original_order(maybes) do
     {tag, list} = maybes
     {tag, Enum.reverse(list)}

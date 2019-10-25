@@ -1,7 +1,20 @@
 defmodule CivilCode.ValueObject.Base do
   @moduledoc false
 
-  defmacro __using__(_) do
+  defmacro __using__(opts \\ []) do
+    inspect_protocol =
+      if Keyword.get(opts, :inspect, true) do
+        quote do
+          defimpl Inspect do
+            import Inspect.Algebra
+
+            def inspect(value_object, opts) do
+              concat(["#", to_doc(@for, opts), "<", to_string(value_object.value), ">"])
+            end
+          end
+        end
+      end
+
     quote do
       use TypedStruct
 
@@ -21,13 +34,7 @@ defmodule CivilCode.ValueObject.Base do
         value_object
       end
 
-      defimpl Inspect do
-        import Inspect.Algebra
-
-        def inspect(value_object, opts) do
-          concat(["#", to_doc(@for, opts), "<", to_doc(value_object.value, opts), ">"])
-        end
-      end
+      unquote(inspect_protocol)
     end
   end
 end
