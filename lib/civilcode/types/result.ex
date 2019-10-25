@@ -28,6 +28,10 @@ defmodule CivilCode.Result do
   @spec error(any) :: error(any)
   def error(result), do: {:error, result}
 
+  @spec ok?(t(any, any)) :: boolean
+  def ok?({:ok, _}), do: true
+  def ok?(_), do: false
+
   @spec error?(t(any, any)) :: boolean
   def error?({:error, _}), do: true
   def error?(_), do: false
