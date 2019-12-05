@@ -11,6 +11,7 @@ defmodule CivilCode.ValueObject.NaiveMoney do
       alias CivilCode.Result
 
       typedstruct enforce: true do
+        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, Decimal.t())
       end
 
@@ -47,6 +48,8 @@ defmodule CivilCode.ValueObject.NaiveMoney do
           concat(["#", to_doc(@for, opts), "<", to_string(value_object), ">"])
         end
       end
+
+      def deserialize_value(value), do: Decimal.new(value)
 
       defoverridable new: 1, to_string: 1
 

@@ -15,6 +15,7 @@ defmodule CivilCode.ValueObject.String do
       end
 
       typedstruct enforce: true do
+        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, String.t())
       end
 

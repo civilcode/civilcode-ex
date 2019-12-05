@@ -10,6 +10,7 @@ defmodule CivilCode.ValueObject.Date do
       alias CivilCode.Result
 
       typedstruct enforce: true do
+        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, Date.t())
       end
 

@@ -8,6 +8,7 @@ defmodule CivilCode.ValueObject.NonNegInteger do
       alias CivilCode.Result
 
       typedstruct enforce: true do
+        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, non_neg_integer)
       end
 

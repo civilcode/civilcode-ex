@@ -5,22 +5,18 @@ defmodule CivilCode.ValueObject.Uuid do
     quote do
       use CivilCode.ValueObject.Base
 
+      @derive Jason.Encoder
+
       alias CivilCode.Result
 
       typedstruct enforce: true do
+        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, String.t())
       end
 
       defimpl String.Chars do
         def to_string(struct) do
           to_string(struct.value)
-        end
-      end
-
-      # Encoding for JSON. Required when a ValueObject is serialized.
-      defimpl Jason.Encoder do
-        def encode(value_object, opts) do
-          Jason.Encode.string(value_object.value, opts)
         end
       end
 
