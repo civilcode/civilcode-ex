@@ -10,7 +10,6 @@ defmodule CivilCode.ValueObject.Decimal do
       alias CivilCode.Result
 
       typedstruct enforce: true do
-        field(:__civilcode__, map, default: %{type: to_string(__MODULE__)})
         field(:value, Decimal.t())
       end
 
@@ -45,8 +44,6 @@ defmodule CivilCode.ValueObject.Decimal do
       def to_string(value_object) do
         Decimal.to_string(value_object.value)
       end
-
-      def deserialize_value(value), do: Decimal.new(value)
 
       defoverridable new: 1, to_string: 1
 

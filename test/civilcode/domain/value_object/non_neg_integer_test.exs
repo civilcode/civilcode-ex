@@ -11,29 +11,4 @@ defmodule CivilCode.ValueObject.NonNegIntegerTest do
       assert capture_io(inspection) == "#Fixtures.NonNegInteger<123>\n"
     end
   end
-
-  describe "serializing" do
-    test "returns a serialized value" do
-      value = Fixtures.NonNegInteger.new!("123")
-      serialized_value = Fixtures.NonNegInteger.serialize(value)
-
-      assert serialized_value == %{
-               "__civilcode__" => %{"type" => "Elixir.Fixtures.NonNegInteger"},
-               "value" => 123
-             }
-    end
-  end
-
-  describe "deserializing" do
-    test "returns a deserialized value" do
-      serialized_value = %{
-        "__civilcode__" => %{"type" => "Elixir.Fixtures.NonNegInteger"},
-        "value" => 123
-      }
-
-      value = Fixtures.NonNegInteger.deserialize(serialized_value)
-
-      assert value == Fixtures.NonNegInteger.new!("123")
-    end
-  end
 end
