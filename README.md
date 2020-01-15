@@ -311,3 +311,7 @@ documentation in how to use them in more details that exceeds the scope of this 
 * `CivilCode.AggregateRoot` (10)
 *  Factory (11)
 * `CivilCode.Repository` (12)
+
+## About CivilCode Inc
+
+CivilCode Inc. is a [custom software development](https://www.civilcode.io) studio developing tailored business applications in [Elixir](http://elixir-lang.org/) and [Phoenix](http://www.phoenixframework.org/) in Montreal, Canada.
