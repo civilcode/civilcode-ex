@@ -26,8 +26,9 @@ defmodule CivilCode.ValueObject.Decimal do
       end
 
       def new(value) when is_binary(value) or is_integer(value) do
-        with {:ok, value} <- Ecto.Type.cast(:decimal, value) do
-          new(value)
+        case Ecto.Type.cast(:decimal, value) do
+          {:ok, casted_value} -> new(casted_value)
+          :error -> Result.error("is invalid")
         end
       end
 
