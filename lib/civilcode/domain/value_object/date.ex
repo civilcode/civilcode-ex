@@ -14,8 +14,9 @@ defmodule CivilCode.ValueObject.Date do
       end
 
       def new(value) when is_binary(value) do
-        with {:ok, value} <- Ecto.Type.cast(:date, value) do
-          new(value)
+        case Ecto.Type.cast(:date, value) do
+          {:ok, casted_value} -> new(casted_value)
+          :error -> Result.error("is invalid")
         end
       end
 
