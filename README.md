@@ -5,11 +5,6 @@ and some basic types such as `CivilCode.Maybe` and `CivilCode.Result`.
 
 The generated documentation can be viewed at: http://civilcode-ex.s3-website-us-east-1.amazonaws.com/
 
-## About CivilCode Inc
-
-[CivilCode Inc.](https://www.civilcode.io) develops tailored business applications in
-[Elixir](http://elixir-lang.org/) and [Phoenix](http://www.phoenixframework.org/) in Montreal, Canada.
-
 # Domain-Driven Design Implementation Guide
 
 ## Background
@@ -312,6 +307,7 @@ documentation in how to use them in more details that exceeds the scope of this 
 *  Factory (11)
 * `CivilCode.Repository` (12)
 
-## About CivilCode Inc
+## About the CivilCode Collective
 
-CivilCode Inc. is a [custom software development](https://www.civilcode.io) studio developing tailored business applications in [Elixir](http://elixir-lang.org/) and [Phoenix](http://www.phoenixframework.org/) in Montreal, Canada.
+The [CivilCode Collective](http://www.civilcode.io), a group of freelance developers, build tailored business applications in [Elixir](http://elixir-lang.org/) and [Phoenix](http://www.phoenixframework.org/)
+in Montreal, Canada.
