@@ -5,9 +5,9 @@ defmodule CivilCode.ResultList do
 
   alias CivilCode.Result
 
-  @type t :: list(Result.t(any))
+  @type t :: list(Result.t(any, any))
 
-  @spec combine(t) :: Result.t(any)
+  @spec combine(t) :: Result.t(any, any)
   def combine(results) do
     results
     |> Enum.reduce(Result.ok([]), &Result.combine/2)

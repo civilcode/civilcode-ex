@@ -89,6 +89,8 @@ defmodule CivilCode.AggregateRoot do
   Another approach in designing an aggregate is to consider how it would be Event-Sourced.
   """
 
+  @type t :: map()
+
   defmacro __using__(_) do
     quote do
       use CivilCode.Entity

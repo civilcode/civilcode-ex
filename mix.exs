@@ -65,15 +65,15 @@ defmodule CivilCode.MixProject do
   defp deps do
     [
       # Development
-      {:dialyxir, "~> 1.0.0-rc.4", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.20.2", only: :dev, runtime: false},
-      {:mix_test_watch, "~> 0.5", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.23.0", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
 
       # Runtime
       {:currying, "~> 1.0.3"},
       {:ecto, ">= 3.0.0"},
       {:jason, "~> 1.0"},
-      {:typed_struct, "~> 0.1.1", runtime: false},
+      {:typed_struct, "~> 0.2.0", runtime: false},
       {:elixir_uuid, "~> 1.2.0"}
     ]
   end

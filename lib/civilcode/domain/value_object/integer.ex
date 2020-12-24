@@ -18,7 +18,7 @@ defmodule CivilCode.ValueObject.Integer do
         end
       end
 
-      @spec new(String.t() | integer) :: Result.t(t, atom)
+      @spec new(String.t() | integer) :: CivilCode.Result.t(t, atom)
       def new(value) when is_binary(value) do
         case Ecto.Type.cast(:integer, value) do
           {:ok, casted_value} -> new(casted_value)

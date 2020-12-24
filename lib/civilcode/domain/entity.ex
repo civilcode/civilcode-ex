@@ -132,7 +132,7 @@ defmodule CivilCode.Entity do
     defstruct events: [], record: nil
   end
 
-  @type t :: %{optional(atom) => any, __struct__: atom, __civilcode__: Metadata.t()}
+  @type t :: %{optional(atom) => any, __struct__: atom}
 
   defmacro __using__(_) do
     quote do
@@ -177,10 +177,9 @@ defmodule CivilCode.Entity do
   Builds an entity from another struct. This is used in a Repository to build an entity
   from a database record.
   """
-  @spec build(module, Result.ok(struct)) :: t
+  @spec build(module, CivilCode.Result.ok(struct) | struct) :: t
   def build(module, {:ok, state}), do: build(module, state)
 
-  @spec build(module, struct) :: t
   def build(module, state) do
     fields = state |> Map.from_struct() |> Enum.into([])
     struct(module, fields ++ [__civilcode__: struct!(Metadata)])

@@ -42,7 +42,7 @@ defmodule CivilCode.Repository do
   > the Repository, you will be unable to retrieve it from that point forward. [IDDD, p. 401]
   """
 
-  alias CivilCode.{AggregateRoot, Entity, EntityId, Result}
+  alias CivilCode.{AggregateRoot, Entity, EntityId, RepositoryError, Result}
 
   defmodule Behaviour do
     @moduledoc """
